@@ -18,7 +18,6 @@ namespace Display1.Service
         public Display1.Models.Address? SelectedAddress { get; set; }
         public List<Shift> Shifts { get; set; }
 
-
         public event Action<Person>? OnUserSelected;
 
         public SearchService(AdventureWorks2019Context dbContext)
@@ -76,24 +75,10 @@ namespace Display1.Service
 
         public List<Shift> GetShiftsForBusinessEntity(int businessEntityId)
         {
-            var employeeDepartmentHistory = _db.EmployeeDepartmentHistory
-                .Include(edh => edh.Shift)
+            return _db.EmployeeDepartmentHistory
                 .Where(edh => edh.BusinessEntityId == businessEntityId)
+                .Select(edh => edh.Shift)
                 .ToList();
-
-            if (employeeDepartmentHistory.Count > 0)
-            {
-                var shifts = employeeDepartmentHistory
-                    .Select(edh => edh.Shift)
-                    .ToList();
-
-                return shifts;
-            }
-
-            return new List<Shift>();
         }
-
-
-
     }
 }
