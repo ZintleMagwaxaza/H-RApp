@@ -31,11 +31,12 @@ namespace Display1.Service
         {
             if (!string.IsNullOrEmpty(SearchInput))
             {
-                SearchResults = _db.Person
+                SearchResults = _db.Employee
+                    .Include(e => e.BusinessEntity)
                     .AsEnumerable()
-                    .Where(p => p.PersonType == "EM" &&
-                                (p.FirstName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase) ||
-                                p.LastName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase)))
+                    .Where(e => e.BusinessEntity.FirstName.IndexOf(SearchInput, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                e.BusinessEntity.LastName.IndexOf(SearchInput, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Select(e => e.BusinessEntity)
                     .ToList();
             }
             else
@@ -44,16 +45,21 @@ namespace Display1.Service
             }
         }
 
+
+
         public void SelectUser(Person person)
         {
-            if (person.PersonType == "EM")
+            var employee = _db.Employee.FirstOrDefault(e => e.BusinessEntityId == person.BusinessEntityId);
+            if (employee != null)
             {
-                SelectedPerson = person;
-                SelectedPersonHistory = GetEmployeeDepartmentHistory(person.BusinessEntityId);
-                Shifts = GetShiftsForBusinessEntity(person.BusinessEntityId);
-                OnUserSelected?.Invoke(person);
+                SelectedPerson = employee.BusinessEntity;
+                SelectedPersonHistory = GetEmployeeDepartmentHistory(employee.BusinessEntityId);
+                Shifts = GetShiftsForBusinessEntity(employee.BusinessEntityId);
+                OnUserSelected?.Invoke(employee.BusinessEntity);
             }
         }
+
+
 
         public EmployeeDepartmentHistory? GetEmployeeDepartmentHistory(int businessEntityId)
         {
