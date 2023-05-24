@@ -16,6 +16,8 @@ namespace Display1.Service
         public EmployeeDepartmentHistory? SelectedPersonHistory { get; set; }
         public EmployeePayHistory? SelectedEmployeePayHistory { get; set; }
         public Display1.Models.Address? SelectedAddress { get; set; }
+        public List<Shift> Shifts { get; set; }
+
 
         public event Action<Person>? OnUserSelected;
 
@@ -23,6 +25,7 @@ namespace Display1.Service
         {
             _db = dbContext;
             SearchResults = new List<Person>();
+            Shifts = new List<Shift>();
         }
 
         public void PerformSearch()
@@ -48,6 +51,7 @@ namespace Display1.Service
             {
                 SelectedPerson = person;
                 SelectedPersonHistory = GetEmployeeDepartmentHistory(person.BusinessEntityId);
+                Shifts = GetShiftsForBusinessEntity(person.BusinessEntityId);
                 OnUserSelected?.Invoke(person);
             }
         }
@@ -69,5 +73,27 @@ namespace Display1.Service
                 .Include(bea => bea.Address)
                 .FirstOrDefault(bea => bea.BusinessEntityId == businessEntityId)?.Address;
         }
+
+        public List<Shift> GetShiftsForBusinessEntity(int businessEntityId)
+        {
+            var employeeDepartmentHistory = _db.EmployeeDepartmentHistory
+                .Include(edh => edh.Shift)
+                .Where(edh => edh.BusinessEntityId == businessEntityId)
+                .ToList();
+
+            if (employeeDepartmentHistory.Count > 0)
+            {
+                var shifts = employeeDepartmentHistory
+                    .Select(edh => edh.Shift)
+                    .ToList();
+
+                return shifts;
+            }
+
+            return new List<Shift>();
+        }
+
+
+
     }
 }

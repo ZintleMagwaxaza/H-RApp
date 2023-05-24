@@ -2,6 +2,8 @@
 @using Display1.Service
 @using Display1.Models
 @using Microsoft.EntityFrameworkCore
+@inject SearchService SearchService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
 <div class="row">
     <div class="col-md-12">
@@ -10,20 +12,21 @@
                 <thead>
                     <tr>
                         <th>Shift ID:</th>
+                        <th>Name:</th>
                         <th>Start Time:</th>
                         <th>End Time:</th>
                         <th>Modified Date:</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Loop through departments and display the details -->
-                    @foreach (var shift in shift.Take(10))
+                    <!-- Loop through shifts and display the details -->
+                    @foreach (var shift in SearchService.Shifts.Take(10))
                     {
                         <tr>
                             <td>@shift.ShiftId</td>
                             <td>@shift.Name</td>
-                            <td>@shift.StartTime</td>
-                            <td>@shift.EndTime</td>
+                            <td>@shift.StartTime.ToString()</td>
+                            <td>@shift.EndTime.ToString()</td>
                             <td>@shift.ModifiedDate</td>
                         </tr>
                     }
@@ -34,12 +37,15 @@
 </div>
 
 @code {
-    private List<Display1.Models.Shift> shift;
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        AdventureWorks2019Context db = new AdventureWorks2019Context();
-        shift = db.Shift.ToList();
+        if (SearchService.SelectedPerson == null)
+        {
+            NavigationManager.NavigateTo("/personaldetails");
+        }
+        else
+        {
+            SearchService.Shifts = SearchService.GetShiftsForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
+        }
     }
-
 }
