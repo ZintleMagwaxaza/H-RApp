@@ -1,0 +1,117 @@
+﻿@page "/employeelookup"
+@using Display1.Models
+@using Microsoft.EntityFrameworkCore
+
+<!-- Style start -->
+<style>
+    .scroll-pane {
+        position: relative;
+    }
+
+    .scroll-pane thead th {
+        position: sticky;
+        top: 0;
+        background-color: #ffffff;
+    }
+</style>
+<!-- Style end -->
+
+<PageTitle>Index</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="searchInput">Search:</label>
+                <input id="searchInput" class="form-control" @bind="@searchInput" />
+                <button class="btn btn-primary" @onclick="Search">Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="scroll-pane" style="height:800px; overflow: auto;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through filtered persons and display the details -->
+                        @foreach (var person in filteredPersons.Take(50))
+                        {
+                            <tr>
+                                <td>@person.FirstName</td>
+                                <td>@person.LastName</td>
+                                <td>@GetEmailAddress(person.BusinessEntityId)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    <!-- Create an instance of the database context -->
+    AdventureWorks2019Context db = new AdventureWorks2019Context();
+
+    <!-- Declare variables -->
+    private List<Person> persons;
+    private List<Person> filteredPersons;
+    private string searchInput;
+
+    <!-- Initialize the component -->
+    protected override void OnInitialized()
+    {
+        persons = db.Person.ToList();
+        filteredPersons = persons;
+    }
+
+    <!-- Apply the search filter -->
+    private void ApplySearchFilter()
+    {
+        if (!string.IsNullOrEmpty(searchInput))
+        {
+            filteredPersons = persons
+    .Where(p => p.FirstName.Any(c => char.IsLetter(c)) &&
+                p.LastName.Any(c => char.IsLetter(c)) &&
+                p.PersonType == "EM" &&
+                (p.FirstName.Contains(searchInput, StringComparison.OrdinalIgnoreCase) ||
+                p.LastName.Contains(searchInput, StringComparison.OrdinalIgnoreCase)))
+    .ToList();
+
+        }
+        else
+        {
+            filteredPersons = persons;
+        }
+    }
+
+    <!-- Perform the search -->
+    private void Search()
+    {
+        ApplySearchFilter();
+    }
+
+    <!-- Get the email address for a given person -->
+    private string GetEmailAddress(int businessEntityId)
+    {
+        var emailAddress = db.EmailAddress.FirstOrDefault(ea => ea.BusinessEntityId == businessEntityId);
+        return emailAddress != null ? emailAddress.EmailAddress1 : string.Empty;
+    }
+
+    <!-- After the component is rendered, apply the initial search filter and update the state -->
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ApplySearchFilter();
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,55 @@
+﻿@page "/employeedepartmenthistory"
+@using Display1.Service
+@inject SearchService SearchService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+<h3>EmployeeDepartmentHistory</h3>
+
+@if (SearchService.SelectedPersonHistory != null)
+{
+    <div class="row">
+        <div class="col-12">
+            <ul class="list-group">
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Business Entity Id:</strong>
+                    <span>@(SearchService.SelectedPersonHistory.BusinessEntityId)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Department Id:</strong>
+                    <span>@(SearchService.SelectedPersonHistory.DepartmentId)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Shift Id:</strong>
+                    <span>@(SearchService.SelectedPersonHistory.ShiftId)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Start Date:</strong>
+                    <span>@(SearchService.SelectedPersonHistory.StartDate)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>End Date:</strong>
+                    <span>@(SearchService.SelectedPersonHistory.EndDate)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Modified Date:</strong>
+                    <span>@(SearchService.SelectedPersonHistory.ModifiedDate)</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        if (SearchService.SelectedPerson == null)
+        {
+          NavigationManager.NavigateTo("/personaldetails");
+        }
+        else
+        {
+          
+            SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
+        }
+    }
+}

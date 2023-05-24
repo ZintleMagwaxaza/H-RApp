@@ -1,0 +1,124 @@
+﻿@page "/humanresource"
+@using Display1.Service
+@using Display1.Models
+@inject SearchService SearchService
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="searchInput">Search:</label>
+                <input id="searchInput" class="form-control" @bind="SearchService.SearchInput" />
+                <button class="btn btn-primary" @onclick="Search">Search</button>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <ul class="nav nav-tabs">
+                @foreach (var item in types)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(selected == Array.IndexOf(types, item) ? "active" : "")" @onclick="() => SelectTab(Array.IndexOf(types, item))">@GetTabName(item)</a>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content">
+                @foreach (var item in types)
+                {
+                    <div class="tab-pane fade @(selected == Array.IndexOf(types, item) ? "show active" : "")">
+                        @if (selected == Array.IndexOf(types, item))
+                        {
+                            <div>
+                                @if (item == typeof(PersonalDetails))
+                                {
+                                    @if (SearchService.SelectedPerson != null)
+                                    {
+                                        <PersonalDetails SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
+                                }
+                                else if (item == typeof(EmployeeDepartment))
+                                {
+                                    <EmployeeDepartment />
+                                }
+                                else if (item == typeof(Shift))
+                                {
+                                    <Shift />
+                                }
+                                else if (item == typeof(PayHistory))
+                                {
+                                    <PayHistory />
+                                }
+                                else if (item == typeof(Address))
+                                {
+                                    <Address />
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4>Search Results:</h4>
+            <ul class="list-group">
+                @foreach (var person in SearchService.SearchResults)
+                {
+                    <li class="list-group-item" @onclick="() => SelectPerson(person)">
+                        @person.FirstName @person.LastName
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+@code {
+    int selected;
+    Type[] types = { typeof(PersonalDetails), typeof(EmployeeDepartment), typeof(Shift), typeof(PayHistory), typeof(Address) };
+
+    string GetTabName(Type type)
+    {
+        if (type == typeof(PersonalDetails))
+        {
+            return "Personal Details";
+        }
+        else if (type == typeof(EmployeeDepartment))
+        {
+            return "Employee Department";
+        }
+        else if (type == typeof(Shift))
+        {
+            return "Shift";
+        }
+        else if (type == typeof(PayHistory))
+        {
+            return "Pay History";
+        }
+        else if (type == typeof(Address))
+        {
+            return "Address";
+        }
+
+        return string.Empty;
+    }
+
+    private void Search()
+    {
+        SearchService.PerformSearch();
+    }
+
+    private void SelectPerson(Person person)
+    {
+        SearchService.SelectedPerson = person;
+    }
+
+    private void SelectTab(int index)
+    {
+        selected = index;
+    }
+}

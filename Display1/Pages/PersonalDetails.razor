@@ -1,0 +1,79 @@
+﻿@page "/personaldetails"
+@using Display1.Models
+@using Display1.Service
+@inject SearchService SearchService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+
+<PageTitle>Index</PageTitle>
+
+<div class="row">
+    <div class="col-12">
+        <ul class="list-group">
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Person Type:</strong>
+                <span>@(SelectedPerson?.PersonType)</span>
+            </li>
+            
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Name Style:</strong>
+                <span>@(SelectedPerson?.NameStyle)</span>
+            </li>
+            
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Title:</strong>
+                <span>@(SelectedPerson?.Title)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>First Name:</strong>
+                <span>@(SelectedPerson?.FirstName)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Middle Name:</strong>
+                <span>@(SelectedPerson?.MiddleName)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Last Name:</strong>
+                <span>@(SelectedPerson?.LastName)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Suffix:</strong>
+                <span>@(SelectedPerson?.Suffix)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Email Promotion:</strong>
+                <span>@(SelectedPerson?.EmailPromotion)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Additional Contact Info:</strong>
+                <span>@(SelectedPerson?.AdditionalContactInfo)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Demographics:</strong>
+                <span>@(SelectedPerson?.Demographics)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>rowguid:</strong>
+                <span>@(SelectedPerson?.Rowguid)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Modified Date:</strong>
+                <span>@(SelectedPerson?.ModifiedDate)</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Person SelectedPerson { get; set; }
+
+    protected override void OnInitialized()
+{
+    if (SelectedPerson == null)
+    {
+        
+        NavigationManager.NavigateTo("/humanresource");
+    }
+}
+}

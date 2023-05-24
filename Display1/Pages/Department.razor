@@ -1,0 +1,42 @@
+﻿@page "/department"
+@using Display1.Models
+@using Microsoft.EntityFrameworkCore
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="scroll-pane" style="height:800px; overflow: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Department ID</th>
+                        <th>Name</th>
+                        <th>Group Name</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through departments and display the details -->
+                    @foreach (var department in departments.Take(16))
+                    {
+                        <tr>
+                            <td>@department.DepartmentId</td>
+                            <td>@department.Name</td>
+                            <td>@department.GroupName</td>
+                            <td>@department.ModifiedDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Display1.Models.Department> departments;
+
+    protected override void OnInitialized()
+    {
+        AdventureWorks2019Context db = new AdventureWorks2019Context();
+        departments = db.Department.ToList();
+    }
+}

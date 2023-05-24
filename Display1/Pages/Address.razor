@@ -1,0 +1,62 @@
+﻿@page "/address"
+@using Display1.Service;
+@inject SearchService SearchService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+<div class="row">
+    <div class="col-12">
+        <ul class="list-group">
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>AddressID:</strong>
+                <span>@(SearchService.SelectedAddress?.AddressId)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Address Line 1:</strong>
+                <span>@(SearchService.SelectedAddress?.AddressLine1)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Address Line 2:</strong>
+                <span>@(SearchService.SelectedAddress?.AddressLine2)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>City:</strong>
+                <span>@(SearchService.SelectedAddress?.City)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>State Province ID:</strong>
+                <span>@(SearchService.SelectedAddress?.StateProvinceId)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>PostalCode:</strong>
+                <span>@(SearchService.SelectedAddress?.PostalCode)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Spatial Location:</strong>
+                <span></span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>rowguid:</strong>
+                <span>@(SearchService.SelectedAddress?.Rowguid)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>ModifiedDate:</strong>
+                <span>@(SearchService.SelectedAddress?.ModifiedDate)</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        if (SearchService.SelectedPerson == null)
+        {
+            NavigationManager.NavigateTo("/personaldetails");
+        }
+        else
+        {
+            var businessEntityId = SearchService.SelectedPerson.BusinessEntityId;
+            SearchService.SelectedAddress = SearchService.GetAddressForBusinessEntity(businessEntityId);
+        }
+    }
+}
