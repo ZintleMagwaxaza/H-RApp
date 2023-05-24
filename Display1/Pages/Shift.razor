@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="scroll-pane" style="height:800px; overflow: auto;">
+        <div class="scroll-pane" style="height:100px; overflow: auto;">
             <table class="table">
                 <thead>
                     <tr>
@@ -20,7 +20,7 @@
                 </thead>
                 <tbody>
                     <!-- Loop through shifts and display the details -->
-                    @foreach (var shift in SearchService.Shifts.Take(10))
+                    @foreach (var shift in SearchService.Shifts.Take(5))
                     {
                         <tr>
                             <td>@shift.ShiftId</td>

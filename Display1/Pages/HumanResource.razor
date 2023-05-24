@@ -3,6 +3,12 @@
 @using Display1.Models
 @inject SearchService SearchService
 
+<style>
+    .search-results-column {
+        padding-top: 15px;
+    }
+</style>
+
 <div class="container">
     <div class="row">
         <div class="col-md-4">
@@ -63,7 +69,7 @@
         </div>
     </div>
     <div class="row mt-4">
-        <div class="col-md-12">
+        <div class="col-md-4 search-results-column">
             <h4>Search Results:</h4>
             <ul class="list-group">
                 @foreach (var person in SearchService.SearchResults)
@@ -73,6 +79,9 @@
                     </li>
                 }
             </ul>
+        </div>
+        <div class="col-md-8">
+            <!-- Display selected user details -->
         </div>
     </div>
 </div>
