@@ -19,6 +19,9 @@ namespace Display1.Service
         public List<Shift> Shifts { get; set; }
 
         public event Action<Person>? OnUserSelected;
+        public List<JobCandidate> JobCandidates { get; set; }
+        
+
 
         public SearchService(AdventureWorks2019Context dbContext)
         {
@@ -106,5 +109,8 @@ namespace Display1.Service
                 .Select(edh => edh.Shift)
                 .ToList();
         }
+
+
+
     }
 }

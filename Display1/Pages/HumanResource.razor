@@ -14,6 +14,8 @@
         list-style-type: none;
         padding: 0;
         margin: 0;
+        max-height: 300px;
+        overflow-y: auto;
     }
 
     .search-results-list-item {
@@ -42,14 +44,18 @@
             </div>
             <div class="search-results-column">
                 <h4>Search Results:</h4>
-                <ul class="search-results-list">
-                    @foreach (var person in SearchService.SearchResults)
-                    {
-                        <li class="search-results-list-item @(person == SearchService.SelectedPerson ? "selected" : "")" @onclick="() => SelectPerson(person)">
-                            @person.FirstName @person.LastName
-                        </li>
-                    }
-                </ul>
+                <div class="search-results-list">
+                    <table class="table">
+                        <tbody>
+                            @foreach (var person in SearchService.SearchResults)
+                            {
+                                <tr class="search-results-list-item @(person == SearchService.SelectedPerson ? "selected" : "")" @onclick="() => SelectPerson(person)">
+                                    <td>@person.FirstName @person.LastName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
