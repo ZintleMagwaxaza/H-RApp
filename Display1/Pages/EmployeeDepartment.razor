@@ -1,5 +1,7 @@
 ﻿@page "/employeedepartmenthistory"
 @using Display1.Service
+using Display1.Models;
+
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
@@ -48,12 +50,13 @@
     {
         if (SearchService.SelectedPerson == null)
         {
-          NavigationManager.NavigateTo("/personaldetails");
+            NavigationManager.NavigateTo("/personaldetails");
         }
         else
         {
-          
             SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
         }
     }
+
+
 }

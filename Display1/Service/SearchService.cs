@@ -31,19 +31,39 @@ namespace Display1.Service
         {
             if (!string.IsNullOrEmpty(SearchInput))
             {
-                SearchResults = _db.Employee
-                    .Include(e => e.BusinessEntity)
-                    .AsEnumerable()
-                    .Where(e => e.BusinessEntity.FirstName.IndexOf(SearchInput, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                e.BusinessEntity.LastName.IndexOf(SearchInput, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .Select(e => e.BusinessEntity)
-                    .ToList();
+                string[] names = SearchInput.Split(' ');
+
+                string firstName = names[0];
+                string lastName = names.Length > 1 ? names[1] : string.Empty;
+
+                if (string.IsNullOrEmpty(lastName))
+                {
+                    SearchResults = _db.Employee
+                        .Include(e => e.BusinessEntity)
+                        .AsEnumerable()
+                        .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    e.BusinessEntity.LastName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Select(e => e.BusinessEntity)
+                        .ToList();
+                }
+                else
+                {
+                    SearchResults = _db.Employee
+                        .Include(e => e.BusinessEntity)
+                        .AsEnumerable()
+                        .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 &&
+                                    e.BusinessEntity.LastName.IndexOf(lastName, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Select(e => e.BusinessEntity)
+                        .ToList();
+                }
             }
             else
             {
                 SearchResults.Clear();
             }
         }
+
+
 
 
 

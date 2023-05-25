@@ -6,18 +6,53 @@
 <style>
     .search-results-column {
         padding-top: 15px;
+        position: sticky;
+        top: 110px;
     }
+
+    .search-results-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .search-results-list-item {
+        padding: 10px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+
+        .search-results-list-item.selected {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .search-results-list-item:hover {
+            background-color: #e9ecef;
+        }
 </style>
 
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <div class="form-group">
-                <label for="searchInput">Search:</label>
+            <div class="form-group d-flex">
+                <label for="searchInput" class="mr-2"></label>
                 <input id="searchInput" class="form-control" @bind="SearchService.SearchInput" />
-                <button class="btn btn-primary" @onclick="Search">Search</button>
+                <button class="btn btn-primary ml-2" @onclick="Search">Search</button>
+            </div>
+            <div class="search-results-column">
+                <h4>Search Results:</h4>
+                <ul class="search-results-list">
+                    @foreach (var person in SearchService.SearchResults)
+                    {
+                        <li class="search-results-list-item @(person == SearchService.SelectedPerson ? "selected" : "")" @onclick="() => SelectPerson(person)">
+                            @person.FirstName @person.LastName
+                        </li>
+                    }
+                </ul>
             </div>
         </div>
+
         <div class="col-md-8">
             <ul class="nav nav-tabs">
                 @foreach (var item in types)
@@ -66,22 +101,6 @@
                     </div>
                 }
             </div>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-4 search-results-column">
-            <h4>Search Results:</h4>
-            <ul class="list-group">
-                @foreach (var person in SearchService.SearchResults)
-                {
-                    <li class="list-group-item" @onclick="() => SelectPerson(person)">
-                        @person.FirstName @person.LastName
-                    </li>
-                }
-            </ul>
-        </div>
-        <div class="col-md-8">
-            <!-- Display selected user details -->
         </div>
     </div>
 </div>
