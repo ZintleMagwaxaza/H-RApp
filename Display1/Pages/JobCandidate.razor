@@ -1,29 +1,44 @@
 ﻿@page "/jobcandidate"
-
+@using Display1.Models
+@using Microsoft.EntityFrameworkCore
 
 <div class="row">
-    <div class="col-12">
-        <ul class="list-group">
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>JobCandidateID:</strong>
-                <span></span>
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>BusinessEntityID:</strong>
-                <span></span>
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>Resume:</strong>
-                <span></span>
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>ModifiedDate:</strong>
-                <span></span>
-            </li>
-
-        </ul>
+    <div class="col-md-12">
+        <div class="scroll-pane" style="height:800px; overflow: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Job Candidate ID</th>
+                        <th>Business Entity ID</th>
+                        <th>Resume</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through jobCandidates and display the details -->
+                    @foreach (var jobCandidate in jobCandidates.Take(16))
+                    {
+                        <tr>
+                            <td>@jobCandidate.JobCandidateId</td>
+                            <td>@jobCandidate.BusinessEntityId</td>
+                            <td>@jobCandidate.Resume</td>
+                            <td>@jobCandidate.ModifiedDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-@code {
 
+@code {
+    private List<Display1.Models.JobCandidate>? jobCandidates;
+
+    protected override void OnInitialized()
+    {
+        using (var dbContext = new AdventureWorks2019Context())
+        {
+            jobCandidates = dbContext.JobCandidate.ToList();
+        }
+    }
 }

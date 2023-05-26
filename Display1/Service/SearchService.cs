@@ -64,7 +64,13 @@ namespace Display1.Service
             {
                 SearchResults.Clear();
             }
+
+            if (SearchResults.Count == 0)
+            {
+                SelectedPerson = null;
+            }
         }
+
 
 
 
