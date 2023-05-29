@@ -32,7 +32,16 @@ namespace Display1.Service
 
         public void PerformSearch()
         {
-            if (!string.IsNullOrEmpty(SearchInput))
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                // Display all employees in alphabetical order by first name
+                SearchResults = _db.Employee
+                    .Include(e => e.BusinessEntity)
+                    .Select(e => e.BusinessEntity)
+                    .OrderBy(e => e.FirstName)
+                    .ToList();
+            }
+            else
             {
                 string[] names = SearchInput.Split(' ');
 
@@ -47,6 +56,7 @@ namespace Display1.Service
                         .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                     e.BusinessEntity.LastName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0)
                         .Select(e => e.BusinessEntity)
+                        .OrderBy(e => e.FirstName)
                         .ToList();
                 }
                 else
@@ -57,12 +67,9 @@ namespace Display1.Service
                         .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 &&
                                     e.BusinessEntity.LastName.IndexOf(lastName, StringComparison.OrdinalIgnoreCase) >= 0)
                         .Select(e => e.BusinessEntity)
+                        .OrderBy(e => e.FirstName)
                         .ToList();
                 }
-            }
-            else
-            {
-                SearchResults.Clear();
             }
 
             if (SearchResults.Count == 0)
@@ -70,6 +77,8 @@ namespace Display1.Service
                 SelectedPerson = null;
             }
         }
+
+
 
 
 

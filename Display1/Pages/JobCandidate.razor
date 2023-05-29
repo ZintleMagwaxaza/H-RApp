@@ -1,44 +1,32 @@
 ﻿@page "/jobcandidate"
+@using Blazorise
+@using Blazorise.DataGrid
 @using Display1.Models
-@using Microsoft.EntityFrameworkCore
+@using Display1.Service
+@inject JobCandidateService jobCandidateService
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="scroll-pane" style="height:800px; overflow: auto;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Job Candidate ID</th>
-                        <th>Business Entity ID</th>
-                        <th>Resume</th>
-                        <th>Modified Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Loop through jobCandidates and display the details -->
-                    @foreach (var jobCandidate in jobCandidates.Take(16))
-                    {
-                        <tr>
-                            <td>@jobCandidate.JobCandidateId</td>
-                            <td>@jobCandidate.BusinessEntityId</td>
-                            <td>@jobCandidate.Resume</td>
-                            <td>@jobCandidate.ModifiedDate</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<PageTitle>Job Candidates</PageTitle>
+
+<DataGrid TItem="Display1.Models.JobCandidate" Data="@jobcandidate">
+    <DataGridCommandColumn TItem="Display1.Models.JobCandidate">
+        <NewCommandTemplate>
+            <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+        </NewCommandTemplate>
+        <EditCommandTemplate>
+            <Button Color="Color.Primary" Clicked="@context.Clicked">Edit</Button>
+        </EditCommandTemplate>
+    </DataGridCommandColumn>
+    <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.JobCandidateId)" Caption="Job Candidate ID"></DataGridColumn>
+    <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.BusinessEntityId)" Caption="Business Entity ID"></DataGridColumn>
+    <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.Resume)" Caption="Resume"></DataGridColumn>
+    <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.ModifiedDate)" Caption="Modified Date"></DataGridColumn>
+</DataGrid>
 
 @code {
-    private List<Display1.Models.JobCandidate>? jobCandidates;
+    private IEnumerable<Display1.Models.JobCandidate> jobcandidate;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        using (var dbContext = new AdventureWorks2019Context())
-        {
-            jobCandidates = dbContext.JobCandidate.ToList();
-        }
+        jobcandidate = await jobCandidateService.GetJobCandidateAsync();
     }
 }
