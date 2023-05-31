@@ -1,0 +1,41 @@
+﻿<!-- EmployeePayHistoryTab.razor -->
+@using Display1.Models
+@using Display1.Service
+@inject EmployeeService EmployeeService
+
+<div class="row">
+    <div class="col-12">
+        <ul class="list-group">
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>BusinessEntityID:</strong>
+                <span>@(SelectedEmployeePayHistory?.BusinessEntityId)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>RateChangeDate:</strong>
+                <span>@(SelectedEmployeePayHistory?.RateChangeDate)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Rate:</strong>
+                <span>@(SelectedEmployeePayHistory?.Rate)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Pay Frequency:</strong>
+                <span>@(SelectedEmployeePayHistory?.PayFrequency)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Modified Date:</strong>
+                <span>@(SelectedEmployeePayHistory?.ModifiedDate)</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    private EmployeePayHistory SelectedEmployeePayHistory;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Retrieve EmployeePayHistory based on selected employee ID
+        SelectedEmployeePayHistory = await EmployeeService.GetEmployeePayHistoryByBusinessEntityId(1);
+    }
+}

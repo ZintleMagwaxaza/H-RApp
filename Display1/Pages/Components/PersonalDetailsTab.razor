@@ -1,70 +1,58 @@
-﻿@page "/personaldetails"
+﻿<!-- PersonalDetailsTab.razor -->
 @using Display1.Models
 @using Display1.Service
-@inject SearchService SearchService
-@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
-
-
-
-<PageTitle>Index</PageTitle>
+@inject EmployeeService EmployeeService
 
 <div class="row">
     <div class="col-12">
         <ul class="list-group">
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Person Type:</strong>
-                <span>@(SelectedPerson?.PersonType)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.PersonType)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Name Style:</strong>
-                <span>@(SelectedPerson?.NameStyle)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.NameStyle)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Title:</strong>
-                <span>@(SelectedPerson?.Title)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.Title)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>First Name:</strong>
-                <span>@(SelectedPerson?.FirstName)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.FirstName)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Middle Name:</strong>
-                <span>@(SelectedPerson?.MiddleName)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.MiddleName)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Last Name:</strong>
-                <span>@(SelectedPerson?.LastName)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.LastName)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Suffix:</strong>
-                <span>@(SelectedPerson?.Suffix)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.Suffix)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Email Promotion:</strong>
-                <span>@(SelectedPerson?.EmailPromotion)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.EmailPromotion)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Additional Contact Info:</strong>
-                <span>@(SelectedPerson?.AdditionalContactInfo)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.AdditionalContactInfo)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Demographics:</strong>
-                <span>
-                    <a href="javascript:void(0)" @onclick="OpenDemographicsXml" class="xml-link">View XML</a>
-                </span>
+                <span>@(SelectedEmployee?.BusinessEntity?.Demographics)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>rowguid:</strong>
-                <span>@(SelectedPerson?.Rowguid)</span>
+                <span>@(SelectedEmployee?.BusinessEntity?.Rowguid)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Modified Date:</strong>
-                <span>@(SelectedPerson?.ModifiedDate)</span>
-            </li>
-            <li>
-            <div>
-                <button class="btn btn-primary">Edit Details</button>
-            </div>
+                <span>@(SelectedEmployee?.BusinessEntity?.ModifiedDate)</span>
             </li>
         </ul>
     </div>
@@ -72,23 +60,11 @@
 
 @code {
     [Parameter]
-    public Person SelectedPerson { get; set; }
+    public Employee SelectedEmployee { get; set; }
 
     protected override void OnInitialized()
     {
-        if (SelectedPerson == null)
-        {
-            NavigationManager.NavigateTo("/humanresource");
-        }
-    }
-
-    private void OpenDemographicsXml()
-    {
-        if (SelectedPerson != null)
-        {
-            //not working fully
-            string url = $"/demographicsxml/{SelectedPerson.BusinessEntityId}";
-            
-        }
+        // Retrieve the employee details with BusinessEntityID 1
+        SelectedEmployee = EmployeeService.GetEmployeeByBusinessEntityId(1);
     }
 }

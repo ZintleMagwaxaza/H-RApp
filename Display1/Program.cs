@@ -45,13 +45,13 @@ namespace WebApp
                 //Search service
                 services.AddScoped<SearchService>();
                 services.AddSingleton<JobCandidateService>();
+                services.AddScoped<EmployeeService>();
 
                 services.AddRazorPages();
                 services.AddServerSideBlazor();
                 services.AddSingleton<WeatherForecastService>();
                 services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
 
-               // services.AddScoped<NavigationManager, NavigationManager>();
 
             }
 

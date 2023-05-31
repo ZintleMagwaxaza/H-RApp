@@ -113,9 +113,23 @@ namespace Display1.Service
 
         public EmployeeDepartmentHistory? GetEmployeeDepartmentHistory(int businessEntityId)
         {
-            return _db.EmployeeDepartmentHistory
+            EmployeeDepartmentHistory employeeDepartmentHistory = _db.EmployeeDepartmentHistory
                 .FirstOrDefault(edh => edh.BusinessEntityId == businessEntityId);
+
+            if (employeeDepartmentHistory != null)
+            {
+                Department department = _db.Department
+                    .FirstOrDefault(d => d.DepartmentId == employeeDepartmentHistory.DepartmentId);
+
+                if (department != null)
+                {
+                    employeeDepartmentHistory.Department = department;
+                }
+            }
+
+            return employeeDepartmentHistory;
         }
+
 
         public EmployeePayHistory? GetEmployeePayHistory(int businessEntityId)
         {

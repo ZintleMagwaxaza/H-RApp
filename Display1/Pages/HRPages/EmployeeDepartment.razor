@@ -22,7 +22,11 @@
                 </li>
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Department Name:</strong>
-                    <span></span>
+                    <span>@(SearchService.SelectedPersonHistory?.Department?.Name)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Department Group:</strong>
+                    <span>@(SearchService.SelectedPersonHistory?.Department?.GroupName)</span>
                 </li>
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Shift Id:</strong>
@@ -59,6 +63,17 @@
             SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
         }
     }
+    protected override async Task OnParametersSetAsync()
+    {
+        // Update the employee department history when the selected employee changes
+        if (SearchService.SelectedPerson != null)
+        {
+            SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
+        }
+    }
 
-
+    private void SelectPerson(Person person)
+    {
+        SearchService.SelectedPerson = person;
+    }
 }

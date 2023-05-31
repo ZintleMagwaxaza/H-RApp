@@ -1,6 +1,8 @@
 ﻿<!-- PersonalDetails.razor -->
+
 @page "/profile"
 @using Display1.Pages.Extra
+@using Display1.Pages.Components
 
 <ul class="nav nav-tabs">
     @foreach (var item in types)
@@ -15,26 +17,44 @@
     @foreach (var item in types)
     {
         <div class="tab-pane fade @(selected == Array.IndexOf(types, item) ? "show active" : "")">
-            <h4>@item.Name Content</h4>
+            
             @if (selected == Array.IndexOf(types, item))
             {
                 <div>
-                    @if (item == typeof(Counter))
+                    @if (item == typeof(PersonalDetailsTab))
                     {
-                        <Counter />
+                        <PersonalDetailsTab />
                     }
-                    else if (item == typeof(FetchData))
+                    else if (item == typeof(EmployeeDepartmentTab))
                     {
-                        <FetchData />
+                        <EmployeeDepartmentTab />
                     }
-                    
+                    else if (item == typeof(ShiftTab))
+                    {
+                        <ShiftTab />
+                    }
+                    else if (item == typeof(PayHistoryTab))
+                    {
+                        <PayHistoryTab />
+                    }
+                    else if (item == typeof(AddressTab))
+                    {
+                        <AddressTab />
+                    }  
                 </div>
             }
         </div>
     }
 </div>
 
+
+
+
 @code {
     int selected;
-    Type[] types = { typeof(Counter), typeof(FetchData) };
+    Type[] types = { typeof(PersonalDetailsTab), 
+                    typeof(EmployeeDepartmentTab), 
+                    typeof(ShiftTab),
+                    typeof(PayHistoryTab),
+                    typeof(AddressTab) };
 }

@@ -1,0 +1,49 @@
+﻿<!-- Shift.razor -->
+@using Display1.Models;
+@using Display1.Service
+
+@inject EmployeeService employeeService
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="scroll-pane" style="height:100px; overflow: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Shift ID:</th>
+                        <th>Name:</th>
+                        <th>Start Time:</th>
+                        <th>End Time:</th>
+                        <th>Modified Date:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Shift != null)
+                    {
+                        <tr>
+                            <td>@Shift.ShiftId</td>
+                            <td>@Shift.Name</td>
+                            <td>@Shift.StartTime</td>
+                            <td>@Shift.EndTime</td>
+                            <td>@Shift.ModifiedDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Shift Shift;
+
+    protected override async Task OnInitializedAsync()
+    {
+        int businessEntityId = 1; 
+
+        if (businessEntityId != 0)
+        {
+            Shift = await employeeService.GetShiftByBusinessEntityId(businessEntityId);
+        }
+    }
+}

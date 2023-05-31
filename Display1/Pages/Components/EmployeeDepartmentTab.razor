@@ -1,0 +1,53 @@
+﻿<!-- EmployeeDeaprtmentTab.razo -->
+@using Display1.Models
+@using Display1.Service
+@inject EmployeeService EmployeeService
+
+<div class="row">
+    <div class="col-12">
+        <ul class="list-group">
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Business Entity Id:</strong>
+                <span>@(SelectedEmployeeDepartment?.BusinessEntityId)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Department Id:</strong>
+                <span>@(SelectedEmployeeDepartment?.DepartmentId)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Department Name:</strong>
+                <span>@(SelectedEmployeeDepartment?.Department?.Name)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Department Group:</strong>
+                <span>@(SelectedEmployeeDepartment?.Department?.GroupName)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Shift Id:</strong>
+                <span>@(SelectedEmployeeDepartment?.ShiftId)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Start Date:</strong>
+                <span>@(SelectedEmployeeDepartment?.StartDate)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>End Date:</strong>
+                <span>@(SelectedEmployeeDepartment?.EndDate)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Modified Date:</strong>
+                <span>@(SelectedEmployeeDepartment?.ModifiedDate)</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    private EmployeeDepartmentHistory SelectedEmployeeDepartment;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Retrieve the employee department details for a specific employee
+        SelectedEmployeeDepartment = await EmployeeService.GetEmployeeDepartmentByBusinessEntityId(1);
+    }
+}

@@ -1,0 +1,57 @@
+﻿<!-- Address.razor -->
+
+@using Display1.Models
+@using Display1.Service
+@inject EmployeeService employeeService
+<div class="row">
+    <div class="col-12">
+        <ul class="list-group">
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>AddressID:</strong>
+                <span>@address.AddressId</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Address Line 1:</strong>
+                <span>@address.AddressLine1</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Address Line 2:</strong>
+                <span>@address.AddressLine2</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>City:</strong>
+                <span>@address.City</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>State Province ID:</strong>
+                <span>@address.StateProvinceId</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>PostalCode:</strong>
+                <span>@address.PostalCode</span>
+            </li>
+            
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>rowguid:</strong>
+                <span>@address.Rowguid</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>ModifiedDate:</strong>
+                <span>@address.ModifiedDate</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int BusinessEntityId { get; set; }
+
+    private Address address;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        address = employeeService.GetAddressForBusinessEntity(1);
+    }
+}
