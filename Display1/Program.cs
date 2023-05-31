@@ -15,9 +15,10 @@ namespace WebApp
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+          CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -40,7 +41,7 @@ namespace WebApp
             {
                 services.AddDbContext<AdventureWorks2019Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
-
+               
                 //Search service
                 services.AddScoped<SearchService>();
                 services.AddSingleton<JobCandidateService>();
@@ -49,6 +50,9 @@ namespace WebApp
                 services.AddServerSideBlazor();
                 services.AddSingleton<WeatherForecastService>();
                 services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
+
+               // services.AddScoped<NavigationManager, NavigationManager>();
+
             }
 
             public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

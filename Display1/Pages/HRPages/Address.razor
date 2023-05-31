@@ -1,7 +1,9 @@
 ﻿@page "/address1"
+@using Display1.Models;
 @using Display1.Service;
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@using Display1.Pages.HRPages
 
 <div class="row">
     <div class="col-12">
@@ -47,6 +49,8 @@
 </div>
 
 @code {
+    [Parameter]
+    public Person SelectedPerson { get; set; }
     protected override async Task OnInitializedAsync()
     {
         if (SearchService.SelectedPerson == null)

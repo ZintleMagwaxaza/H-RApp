@@ -1,0 +1,40 @@
+﻿<!-- PersonalDetails.razor -->
+@page "/profile"
+@using Display1.Pages.Extra
+
+<ul class="nav nav-tabs">
+    @foreach (var item in types)
+    {
+        <li class="nav-item">
+            <a class="nav-link @(selected == Array.IndexOf(types, item) ? "active" : "")" @onclick="() => selected = Array.IndexOf(types, item)">@item.Name</a>
+        </li>
+    }
+</ul>
+
+<div class="tab-content">
+    @foreach (var item in types)
+    {
+        <div class="tab-pane fade @(selected == Array.IndexOf(types, item) ? "show active" : "")">
+            <h4>@item.Name Content</h4>
+            @if (selected == Array.IndexOf(types, item))
+            {
+                <div>
+                    @if (item == typeof(Counter))
+                    {
+                        <Counter />
+                    }
+                    else if (item == typeof(FetchData))
+                    {
+                        <FetchData />
+                    }
+                    
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    int selected;
+    Type[] types = { typeof(Counter), typeof(FetchData) };
+}

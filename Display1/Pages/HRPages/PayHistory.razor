@@ -1,4 +1,5 @@
 ﻿@page "/payhistory"
+@using Display1.Models;
 @using Display1.Service;
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
@@ -31,6 +32,8 @@
 </div>
 
 @code {      
+    [Parameter]
+    public Person SelectedPerson { get; set; }
     protected override async Task OnInitializedAsync()
     {
         if (SearchService.SelectedPerson == null)

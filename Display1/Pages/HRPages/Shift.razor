@@ -4,6 +4,7 @@
 @using Microsoft.EntityFrameworkCore
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@using Display1.Pages.HRPages
 
 <div class="row">
     <div class="col-md-12">
@@ -37,6 +38,8 @@
 </div>
 
 @code {
+
+
     protected override async Task OnInitializedAsync()
     {
         if (SearchService.SelectedPerson == null)

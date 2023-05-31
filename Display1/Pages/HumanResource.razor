@@ -1,7 +1,11 @@
 ﻿@page "/humanresource"
 @using Display1.Service
 @using Display1.Models
+@using Display1.Pages.HRPages
 @inject SearchService SearchService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components
+
 
 <style>
     .search-results-column {
@@ -14,7 +18,7 @@
         list-style-type: none;
         padding: 0;
         margin: 0;
-        max-height: 300px;
+        max-height: 460px;
         overflow-y: auto;
     }
 
@@ -89,7 +93,7 @@
                                 {
                                     <EmployeeDepartment />
                                 }
-                                else if (item == typeof(Shift))
+                                else if (item == typeof(HRPages.Shift))
                                 {
                                     <Shift />
                                 }
@@ -97,7 +101,7 @@
                                 {
                                     <PayHistory />
                                 }
-                                else if (item == typeof(Address))
+                                else if (item == typeof(HRPages.Address))
                                 {
                                     <Address />
                                 }
@@ -112,7 +116,7 @@
 
 @code {
     int selected;
-    Type[] types = { typeof(PersonalDetails), typeof(EmployeeDepartment), typeof(Shift), typeof(PayHistory), typeof(Address) };
+    Type[] types = { typeof(PersonalDetails), typeof(EmployeeDepartment), typeof(HRPages.Shift), typeof(PayHistory), typeof(HRPages.Address) };
 
     string GetTabName(Type type)
     {
@@ -124,7 +128,7 @@
         {
             return "Employee Department";
         }
-        else if (type == typeof(Shift))
+        else if (type == typeof(HRPages.Shift))
         {
             return "Shift";
         }
@@ -132,7 +136,7 @@
         {
             return "Pay History";
         }
-        else if (type == typeof(Address))
+        else if (type == typeof(HRPages.Address))
         {
             return "Address";
         }
@@ -143,6 +147,11 @@
     private void Search()
     {
         SearchService.PerformSearch();
+
+    }
+    protected override void OnInitialized()
+    {
+        SearchService.PerformSearch(); // Call PerformSearch method synchronously
     }
 
     private void SelectPerson(Person person)
@@ -154,4 +163,12 @@
     {
         selected = index;
     }
+
+    private void SelectEmployee(Person person)
+    {
+        SearchService.SelectedPerson = person;
+        NavigationManager.NavigateTo("/personaldetails");
+    }
+
+
 }

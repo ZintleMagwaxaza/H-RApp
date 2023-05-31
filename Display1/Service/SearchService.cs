@@ -30,6 +30,11 @@ namespace Display1.Service
             Shifts = new List<Shift>();
         }
 
+        public void Initialize()
+        {
+            PerformSearch(); // Perform any initialization logic here
+        }
+
         public void PerformSearch()
         {
             if (string.IsNullOrEmpty(SearchInput))
@@ -74,8 +79,15 @@ namespace Display1.Service
 
             if (SearchResults.Count == 0)
             {
-                SelectedPerson = null;
+                // If no search results, display all employees
+                SearchResults = _db.Employee
+                    .Include(e => e.BusinessEntity)
+                    .Select(e => e.BusinessEntity)
+                    .OrderBy(e => e.FirstName)
+                    .ToList();
             }
+
+            SelectedPerson = null;
         }
 
 

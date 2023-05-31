@@ -1,6 +1,5 @@
 ﻿using Display1.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Display1.Service
@@ -17,6 +16,12 @@ namespace Display1.Service
         public async Task<List<JobCandidate>> GetJobCandidateAsync()
         {
             return await _context.JobCandidate.ToListAsync();
+        }
+
+        public async Task CreateJobCandidateAsync(JobCandidate jobCandidate)
+        {
+            _context.JobCandidate.Add(jobCandidate);
+            await _context.SaveChangesAsync();
         }
     }
 }
