@@ -1,0 +1,80 @@
+﻿@page "/shift"
+@using Display1.Service
+@using Display1.Models
+@using Microsoft.EntityFrameworkCore
+@inject SearchService SearchService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@using Display1.Pages.HRPages
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="scroll-pane" style="height:100px; overflow: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Shift ID:</th>
+                        <th>Name:</th>
+                        <th>Start Time:</th>
+                        <th>End Time:</th>
+                        <th>Modified Date:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through shifts and display the details -->
+                    @foreach (var shift in SearchService.Shifts.Take(5))
+                    {
+                        <tr>
+                            <td>@shift.ShiftId</td>
+                            <td>@shift.Name</td>
+                            <td>@shift.StartTime.ToString()</td>
+                            <td>@shift.EndTime.ToString()</td>
+                            <td>@shift.ModifiedDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Person SelectedPerson { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (SearchService.SelectedPerson == null)
+        {
+            NavigationManager.NavigateTo("/personaldetails");
+        }
+        else
+        {
+            SearchService.OnUserSelected += HandleUserSelected;
+            await ReloadShifts();
+        }
+    }
+
+    private async Task ReloadShifts()
+    {
+        if (SearchService.SelectedPerson != null)
+        {
+            SearchService.Shifts = SearchService.GetShiftsForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void HandleUserSelected(Person person)
+    {
+        SearchService.SelectedPerson = person;
+        _ = ReloadShifts();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (SearchService.SelectedPerson != null)
+        {
+            SearchService.Shifts = SearchService.GetShiftsForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
+            StateHasChanged();
+        }
+    }
+}

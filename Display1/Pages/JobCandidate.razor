@@ -1,29 +1,74 @@
 ﻿@page "/jobcandidate"
+@using Blazorise
+@using Blazorise.DataGrid
+@using Display1.Models
+@using Display1.Service
+@using System.Xml.Linq
+@inject JobCandidateService jobCandidateService
+@inject NavigationManager navigationManager
+
+<PageTitle>Job Candidates</PageTitle>
+@if (jobcandidate == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <DataGrid TItem="Display1.Models.JobCandidate" Data="@jobcandidate" Sortable="true" Editable="true" ShowPager="true">
+        <DataGridCommandColumn TItem="Display1.Models.JobCandidate" Caption="Actions" Width="150px">
+            <NewCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+            </NewCommandTemplate>
+            <EditCommandTemplate>
+                <Button Color="Color.Primary" Clicked="@context.Clicked">Edit</Button>
+            </EditCommandTemplate>
+        </DataGridCommandColumn>
+
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.JobCandidateId)" Caption="Job Candidate ID"></DataGridColumn>
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.BusinessEntityId)" Caption="Business Entity ID"></DataGridColumn>
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.Resume)" Caption="Resume">
+            <DisplayTemplate>
+                @if (!string.IsNullOrEmpty(context.Resume))
+                {
+                    <a href="javascript:void(0);" @onclick="() => ShowResume(context.Resume)">View Resume</a>
+                }
+            </DisplayTemplate>
+        </DataGridColumn>
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.ModifiedDate)" Caption="Modified Date"></DataGridColumn>
+
+    </DataGrid>
+}
 
 
-<div class="row">
-    <div class="col-12">
-        <ul class="list-group">
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>JobCandidateID:</strong>
-                <span></span>
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>BusinessEntityID:</strong>
-                <span></span>
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>Resume:</strong>
-                <span></span>
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>ModifiedDate:</strong>
-                <span></span>
-            </li>
-
-        </ul>
-    </div>
-</div>
 @code {
+    private IEnumerable<Display1.Models.JobCandidate> jobcandidate = new List<Display1.Models.JobCandidate>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadJobCandidates();
+    }
+
+    private async Task LoadJobCandidates()
+    {
+        jobcandidate = await jobCandidateService.GetJobCandidateAsync();
+    }
+
+    private void ShowResume(string resumeXml)
+    {
+        XDocument xDocument = XDocument.Parse(resumeXml);
+        navigationManager.NavigateTo($"/resume?xml={Uri.EscapeDataString(resumeXml)}");
+    }
+
+    private async Task NewClicked(Display1.Models.JobCandidate context)
+    {
+        var newJobCandidate = new Display1.Models.JobCandidate();
+        newJobCandidate.ModifiedDate = DateTime.Now;
+        await jobCandidateService.CreateJobCandidateAsync(newJobCandidate);
+        await LoadJobCandidates();
+    }
+
+    private void EditClicked(Display1.Models.JobCandidate context)
+    {
+     
+    }
 }

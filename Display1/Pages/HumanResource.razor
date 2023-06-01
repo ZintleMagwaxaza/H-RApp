@@ -1,15 +1,65 @@
 ﻿@page "/humanresource"
 @using Display1.Service
 @using Display1.Models
+@using Display1.Pages.HRPages
 @inject SearchService SearchService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components
+
+
+<style>
+    .search-results-column {
+        padding-top: 15px;
+        position: sticky;
+        top: 110px;
+    }
+
+    .search-results-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        max-height: 460px;
+        overflow-y: auto;
+    }
+
+    .search-results-list-item {
+        padding: 10px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+
+        .search-results-list-item.selected {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .search-results-list-item:hover {
+            background-color: #e9ecef;
+        }
+</style>
 
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <div class="form-group">
-                <label for="searchInput">Search:</label>
+            <div class="form-group d-flex">
+                <label for="searchInput" class="mr-2"></label>
                 <input id="searchInput" class="form-control" @bind="SearchService.SearchInput" />
-                <button class="btn btn-primary" @onclick="Search">Search</button>
+                <button class="btn btn-primary ml-2" @onclick="Search">Search</button>
+            </div>
+            <div class="search-results-column">
+                <h4>Search Results:</h4>
+                <div class="search-results-list">
+                    <table class="table">
+                        <tbody>
+                            @foreach (var person in SearchService.SearchResults)
+                            {
+                                <tr class="search-results-list-item @(person == SearchService.SelectedPerson ? "selected" : "")" @onclick="() => SelectPerson(person)">
+                                    <td>@person.FirstName @person.LastName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="col-md-8">
@@ -41,19 +91,47 @@
                                 }
                                 else if (item == typeof(EmployeeDepartment))
                                 {
-                                    <EmployeeDepartment />
+                                    @if (SearchService.SelectedPerson != null)
+                                    {
+                                        <EmployeeDepartment SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
-                                else if (item == typeof(Shift))
+                                else if (item == typeof(HRPages.Shift))
                                 {
-                                    <Shift />
+                                    if (SearchService.SelectedPerson != null)
+                                    {
+                                        <Shift SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
                                 else if (item == typeof(PayHistory))
                                 {
-                                    <PayHistory />
+                                    if (SearchService.SelectedPerson != null)
+                                    {
+                                        <PayHistory SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
-                                else if (item == typeof(Address))
+                                else if (item == typeof(HRPages.Address))
                                 {
-                                    <Address />
+                                    if (SearchService.SelectedPerson != null)
+                                    {
+                                        <Address SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
                             </div>
                         }
@@ -62,24 +140,11 @@
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <h4>Search Results:</h4>
-            <ul class="list-group">
-                @foreach (var person in SearchService.SearchResults)
-                {
-                    <li class="list-group-item" @onclick="() => SelectPerson(person)">
-                        @person.FirstName @person.LastName
-                    </li>
-                }
-            </ul>
-        </div>
-    </div>
 </div>
 
 @code {
     int selected;
-    Type[] types = { typeof(PersonalDetails), typeof(EmployeeDepartment), typeof(Shift), typeof(PayHistory), typeof(Address) };
+    Type[] types = { typeof(PersonalDetails), typeof(EmployeeDepartment), typeof(HRPages.Shift), typeof(PayHistory), typeof(HRPages.Address) };
 
     string GetTabName(Type type)
     {
@@ -91,7 +156,7 @@
         {
             return "Employee Department";
         }
-        else if (type == typeof(Shift))
+        else if (type == typeof(HRPages.Shift))
         {
             return "Shift";
         }
@@ -99,7 +164,7 @@
         {
             return "Pay History";
         }
-        else if (type == typeof(Address))
+        else if (type == typeof(HRPages.Address))
         {
             return "Address";
         }
@@ -110,6 +175,11 @@
     private void Search()
     {
         SearchService.PerformSearch();
+
+    }
+    protected override void OnInitialized()
+    {
+        SearchService.PerformSearch(); 
     }
 
     private void SelectPerson(Person person)
@@ -121,4 +191,12 @@
     {
         selected = index;
     }
+
+    private void SelectEmployee(Person person)
+    {
+        SearchService.SelectedPerson = person;
+        NavigationManager.NavigateTo("/personaldetails");
+    }
+
+
 }

@@ -1,0 +1,43 @@
+﻿@page "/fetchdata"
+@using Blazorise
+@using Display1.Data
+@using Blazorise.DataGrid
+@inject WeatherForecastService ForecastService
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <DataGrid TItem="WeatherForecast" Data="@forecasts" Sortable="true" Editable="true" ShowPager="true">
+        <DataGridCommandColumn TItem="WeatherForecast">
+            <NewCommandTemplate>
+                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
+            </NewCommandTemplate>
+            <EditCommandTemplate>
+                <Button Color="Color.Primary" Clicked="@context.Clicked">Edit</Button>
+            </EditCommandTemplate>
+        </DataGridCommandColumn>
+
+        <Blazorise.DataGrid.DataGridColumn TItem="WeatherForecast" Field="@nameof(WeatherForecast.Date)" Caption="Date" Editable="true"></Blazorise.DataGrid.DataGridColumn>
+        <Blazorise.DataGrid.DataGridColumn TItem="WeatherForecast" Field="@nameof(WeatherForecast.TemperatureC)" Caption="Temp (C)" Editable="true"></Blazorise.DataGrid.DataGridColumn>
+        <Blazorise.DataGrid.DataGridColumn TItem="WeatherForecast" Field="@nameof(WeatherForecast.TemperatureF)" Caption="Temp(F)" Editable="true"></Blazorise.DataGrid.DataGridColumn>
+        <Blazorise.DataGrid.DataGridColumn TItem="WeatherForecast" Field="@nameof(WeatherForecast.Summary)" Caption="Summary" Editable="true"></Blazorise.DataGrid.DataGridColumn>
+    </DataGrid>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+    }
+}

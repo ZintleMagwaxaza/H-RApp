@@ -1,0 +1,70 @@
+﻿<!-- PersonalDetailsTab.razor -->
+@using Display1.Models
+@using Display1.Service
+@inject EmployeeService EmployeeService
+
+<div class="row">
+    <div class="col-12">
+        <ul class="list-group">
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Person Type:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.PersonType)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Name Style:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.NameStyle)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Title:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.Title)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>First Name:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.FirstName)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Middle Name:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.MiddleName)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Last Name:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.LastName)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Suffix:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.Suffix)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Email Promotion:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.EmailPromotion)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Additional Contact Info:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.AdditionalContactInfo)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Demographics:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.Demographics)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>rowguid:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.Rowguid)</span>
+            </li>
+            <li class="list-group-item" style="list-style-type: none;">
+                <strong>Modified Date:</strong>
+                <span>@(SelectedEmployee?.BusinessEntity?.ModifiedDate)</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Employee SelectedEmployee { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Retrieve the employee details with BusinessEntityID 1
+        SelectedEmployee = EmployeeService.GetEmployeeByBusinessEntityId(1);
+    }
+}

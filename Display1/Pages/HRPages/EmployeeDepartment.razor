@@ -1,9 +1,11 @@
 ﻿@page "/employeedepartmenthistory"
 @using Display1.Service
+@using Display1.Models;
+
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
-<h3>EmployeeDepartmentHistory</h3>
+
 
 @if (SearchService.SelectedPersonHistory != null)
 {
@@ -17,6 +19,14 @@
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Department Id:</strong>
                     <span>@(SearchService.SelectedPersonHistory.DepartmentId)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Department Name:</strong>
+                    <span>@(SearchService.SelectedPersonHistory?.Department?.Name)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Department Group:</strong>
+                    <span>@(SearchService.SelectedPersonHistory?.Department?.GroupName)</span>
                 </li>
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Shift Id:</strong>
@@ -40,16 +50,30 @@
 }
 
 @code {
+    [Parameter]
+    public Person SelectedPerson { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         if (SearchService.SelectedPerson == null)
         {
-          NavigationManager.NavigateTo("/personaldetails");
+            NavigationManager.NavigateTo("/personaldetails");
         }
         else
         {
-          
             SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
         }
     }
+
+    protected override void OnParametersSet()
+    {
+        if (SearchService.SelectedPerson != null)
+        {
+            SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
+            StateHasChanged(); // Refresh the component to update the fields
+        }
+    }
 }
+
+
+

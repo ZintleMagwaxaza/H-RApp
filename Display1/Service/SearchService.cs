@@ -16,47 +16,126 @@ namespace Display1.Service
         public EmployeeDepartmentHistory? SelectedPersonHistory { get; set; }
         public EmployeePayHistory? SelectedEmployeePayHistory { get; set; }
         public Display1.Models.Address? SelectedAddress { get; set; }
+        public List<Shift> Shifts { get; set; }
 
-        public event Action<Person>? OnUserSelected;
+        public event Action<Person> OnUserSelected;
+        public List<JobCandidate> JobCandidates { get; set; }
+
+
 
         public SearchService(AdventureWorks2019Context dbContext)
         {
             _db = dbContext;
             SearchResults = new List<Person>();
+            Shifts = new List<Shift>();
+        }
+
+        public void Initialize()
+        {
+            PerformSearch(); // Perform any initialization logic here
         }
 
         public void PerformSearch()
         {
-            if (!string.IsNullOrEmpty(SearchInput))
+            if (string.IsNullOrEmpty(SearchInput))
             {
-                SearchResults = _db.Person
-                    .AsEnumerable()
-                    .Where(p => p.PersonType == "EM" &&
-                                (p.FirstName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase) ||
-                                p.LastName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase)))
+                // Display all employees in alphabetical order by first name
+                SearchResults = _db.Employee
+                    .Include(e => e.BusinessEntity)
+                    .Select(e => e.BusinessEntity)
+                    .OrderBy(e => e.FirstName)
                     .ToList();
             }
             else
             {
-                SearchResults.Clear();
+                string[] names = SearchInput.Split(' ');
+
+                string firstName = names[0];
+                string lastName = names.Length > 1 ? names[1] : string.Empty;
+
+                if (string.IsNullOrEmpty(lastName))
+                {
+                    SearchResults = _db.Employee
+                        .Include(e => e.BusinessEntity)
+                        .AsEnumerable()
+                        .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    e.BusinessEntity.LastName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Select(e => e.BusinessEntity)
+                        .OrderBy(e => e.FirstName)
+                        .ToList();
+                }
+                else
+                {
+                    SearchResults = _db.Employee
+                        .Include(e => e.BusinessEntity)
+                        .AsEnumerable()
+                        .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 &&
+                                    e.BusinessEntity.LastName.IndexOf(lastName, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Select(e => e.BusinessEntity)
+                        .OrderBy(e => e.FirstName)
+                        .ToList();
+                }
             }
+
+            if (SearchResults.Count == 0)
+            {
+                // If no search results, display all employees
+                SearchResults = _db.Employee
+                    .Include(e => e.BusinessEntity)
+                    .Select(e => e.BusinessEntity)
+                    .OrderBy(e => e.FirstName)
+                    .ToList();
+            }
+
+            SelectedPerson = null;
         }
+
 
         public void SelectUser(Person person)
         {
-            if (person.PersonType == "EM")
+            var employee = _db.Employee.FirstOrDefault(e => e.BusinessEntityId == person.BusinessEntityId);
+            if (employee != null)
             {
-                SelectedPerson = person;
-                SelectedPersonHistory = GetEmployeeDepartmentHistory(person.BusinessEntityId);
+                SelectedPerson = employee.BusinessEntity;
+                SelectedPersonHistory = GetEmployeeDepartmentHistory(employee.BusinessEntityId);
+
+                // Update the shifts only if the selected person has changed
+                if (SelectedPerson != person)
+                {
+                    Shifts = GetShiftsForBusinessEntity(person.BusinessEntityId);
+                    SelectedPerson = person;
+                }
+
+                // Trigger the OnUserSelected event
                 OnUserSelected?.Invoke(person);
             }
         }
 
+
+
+
+
         public EmployeeDepartmentHistory? GetEmployeeDepartmentHistory(int businessEntityId)
         {
-            return _db.EmployeeDepartmentHistory
+            EmployeeDepartmentHistory employeeDepartmentHistory = _db.EmployeeDepartmentHistory
                 .FirstOrDefault(edh => edh.BusinessEntityId == businessEntityId);
+
+            if (employeeDepartmentHistory != null)
+            {
+                Department department = _db.Department
+                    .FirstOrDefault(d => d.DepartmentId == employeeDepartmentHistory.DepartmentId);
+
+                if (department != null)
+                {
+                    employeeDepartmentHistory.Department = department;
+                }
+            }
+
+            return employeeDepartmentHistory;
         }
+
+
+
 
         public EmployeePayHistory? GetEmployeePayHistory(int businessEntityId)
         {
@@ -68,6 +147,14 @@ namespace Display1.Service
             return _db.BusinessEntityAddress
                 .Include(bea => bea.Address)
                 .FirstOrDefault(bea => bea.BusinessEntityId == businessEntityId)?.Address;
+        }
+
+        public List<Shift> GetShiftsForBusinessEntity(int businessEntityId)
+        {
+            return _db.EmployeeDepartmentHistory
+                .Where(edh => edh.BusinessEntityId == businessEntityId)
+                .Select(edh => edh.Shift)
+                .ToList();
         }
     }
 }

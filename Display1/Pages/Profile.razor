@@ -1,0 +1,86 @@
+﻿<!-- PersonalDetails.razor -->
+
+@page "/profile"
+@using Display1.Pages.Extra
+@using Display1.Pages.Components
+
+<ul class="nav nav-tabs">
+    @foreach (var item in types)
+    {
+        <li class="nav-item">
+            <a class="nav-link @(selected == Array.IndexOf(types, item) ? "active" : "")" @onclick="() => selected = Array.IndexOf(types, item)">@item.Name</a>
+        </li>
+    }
+</ul>
+
+<div class="tab-content">
+    @foreach (var item in types)
+    {
+        <div class="tab-pane fade @(selected == Array.IndexOf(types, item) ? "show active" : "")">
+            
+            @if (selected == Array.IndexOf(types, item))
+            {
+                <div>
+                    @if (item == typeof(PersonalDetailsTab))
+                    {
+                        <PersonalDetailsTab />
+                    }
+                    else if (item == typeof(EmployeeDepartmentTab))
+                    {
+                        <EmployeeDepartmentTab />
+                    }
+                    else if (item == typeof(ShiftTab))
+                    {
+                        <ShiftTab />
+                    }
+                    else if (item == typeof(PayHistoryTab))
+                    {
+                        <PayHistoryTab />
+                    }
+                    else if (item == typeof(AddressTab))
+                    {
+                        <AddressTab />
+                    }  
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+
+
+@code {
+    int selected;
+    Type[] types = { typeof(PersonalDetailsTab), 
+                    typeof(EmployeeDepartmentTab), 
+                    typeof(ShiftTab),
+                    typeof(PayHistoryTab),
+                    typeof(AddressTab) };
+
+    string GetTabName(Type type)
+    {
+        if (type == typeof(PersonalDetailsTab))
+        {
+            return "Personal Details";
+        }
+        else if (type == typeof(EmployeeDepartmentTab))
+        {
+            return "Employee Department";
+        }
+        else if (type == typeof(ShiftTab))
+        {
+            return "Shift";
+        }
+        else if (type == typeof(PayHistoryTab))
+        {
+            return "Pay History";
+        }
+        else if (type == typeof(AddressTab))
+        {
+            return "Address";
+        }
+
+        return string.Empty;
+    }
+}

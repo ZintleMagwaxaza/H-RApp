@@ -1,0 +1,65 @@
+﻿@page "/payhistory"
+@using Display1.Models;
+@using Display1.Service;
+@inject SearchService SearchService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+<div class="row">
+    <div class="col-12">
+        @if (SearchService.SelectedPerson != null)
+        {
+            <ul class="list-group">
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>BusinessEntityID:</strong>
+                    <span>@(SearchService.SelectedEmployeePayHistory?.BusinessEntityId)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>RateChangeDate:</strong>
+                    <span>@(SearchService.SelectedEmployeePayHistory?.RateChangeDate)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Rate:</strong>
+                    <span>@(SearchService.SelectedEmployeePayHistory?.Rate)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Pay Frequency:</strong>
+                    <span>@(SearchService.SelectedEmployeePayHistory?.PayFrequency)</span>
+                </li>
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Modified Date:</strong>
+                    <span>@(SearchService.SelectedEmployeePayHistory?.ModifiedDate)</span>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <p>Search and select a User:</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Person SelectedPerson { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (SearchService.SelectedPerson == null)
+        {
+            NavigationManager.NavigateTo("/personaldetails");
+        }
+        else
+        {
+            SearchService.SelectedEmployeePayHistory = SearchService.GetEmployeePayHistory(SearchService.SelectedPerson.BusinessEntityId);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (SearchService.SelectedPerson != null)
+        {
+            SearchService.SelectedEmployeePayHistory = SearchService.GetEmployeePayHistory(SearchService.SelectedPerson.BusinessEntityId);
+            StateHasChanged(); // Refresh the component to update the fields
+        }
+    }
+}
