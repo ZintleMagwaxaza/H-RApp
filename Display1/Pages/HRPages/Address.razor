@@ -47,6 +47,7 @@
 @code {
     [Parameter]
     public Person SelectedPerson { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         if (SearchService.SelectedPerson == null)
@@ -55,8 +56,16 @@
         }
         else
         {
-            var businessEntityId = SearchService.SelectedPerson.BusinessEntityId;
-            SearchService.SelectedAddress = SearchService.GetAddressForBusinessEntity(businessEntityId);
+            SearchService.SelectedAddress = SearchService.GetAddressForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (SearchService.SelectedPerson != null)
+        {
+            SearchService.SelectedAddress = SearchService.GetAddressForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
+            StateHasChanged(); // Refresh the component to update the fields
         }
     }
 }

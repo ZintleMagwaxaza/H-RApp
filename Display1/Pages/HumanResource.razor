@@ -124,7 +124,14 @@
                                 }
                                 else if (item == typeof(HRPages.Address))
                                 {
-                                    <Address />
+                                    if (SearchService.SelectedPerson != null)
+                                    {
+                                        <Address SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
                             </div>
                         }
