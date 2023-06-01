@@ -91,11 +91,18 @@
                                 }
                                 else if (item == typeof(EmployeeDepartment))
                                 {
-                                    <EmployeeDepartment />
+                                    @if (SearchService.SelectedPerson != null)
+                                    {
+                                        <EmployeeDepartment SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
                                 else if (item == typeof(HRPages.Shift))
                                 {
-                                    <Shift />
+                                   <Shift />
                                 }
                                 else if (item == typeof(PayHistory))
                                 {

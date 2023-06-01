@@ -50,7 +50,8 @@
 }
 
 @code {
-   
+    [Parameter]
+    public Person SelectedPerson { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,17 +64,16 @@
             SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
         }
     }
-    protected override async Task OnParametersSetAsync()
+
+    protected override void OnParametersSet()
     {
-        // Update the employee department history when the selected employee changes
         if (SearchService.SelectedPerson != null)
         {
             SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
+            StateHasChanged(); // Refresh the component to update the fields
         }
     }
-
-    private void SelectPerson(Person person)
-    {
-        SearchService.SelectedPerson = person;
-    }
 }
+
+
+

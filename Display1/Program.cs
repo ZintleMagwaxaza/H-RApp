@@ -46,6 +46,7 @@ namespace WebApp
                 services.AddScoped<SearchService>();
                 services.AddSingleton<JobCandidateService>();
                 services.AddScoped<EmployeeService>();
+                
 
                 services.AddRazorPages();
                 services.AddServerSideBlazor();

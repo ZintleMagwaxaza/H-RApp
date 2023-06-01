@@ -57,4 +57,30 @@
                     typeof(ShiftTab),
                     typeof(PayHistoryTab),
                     typeof(AddressTab) };
+
+    string GetTabName(Type type)
+    {
+        if (type == typeof(PersonalDetailsTab))
+        {
+            return "Personal Details";
+        }
+        else if (type == typeof(EmployeeDepartmentTab))
+        {
+            return "Employee Department";
+        }
+        else if (type == typeof(ShiftTab))
+        {
+            return "Shift";
+        }
+        else if (type == typeof(PayHistoryTab))
+        {
+            return "Pay History";
+        }
+        else if (type == typeof(AddressTab))
+        {
+            return "Address";
+        }
+
+        return string.Empty;
+    }
 }

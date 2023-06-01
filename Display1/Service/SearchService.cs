@@ -18,9 +18,9 @@ namespace Display1.Service
         public Display1.Models.Address? SelectedAddress { get; set; }
         public List<Shift> Shifts { get; set; }
 
-        public event Action<Person>? OnUserSelected;
+        public event Action<Person> OnUserSelected;
         public List<JobCandidate> JobCandidates { get; set; }
-        
+
 
 
         public SearchService(AdventureWorks2019Context dbContext)
@@ -91,12 +91,6 @@ namespace Display1.Service
         }
 
 
-
-
-
-
-
-
         public void SelectUser(Person person)
         {
             var employee = _db.Employee.FirstOrDefault(e => e.BusinessEntityId == person.BusinessEntityId);
@@ -105,9 +99,20 @@ namespace Display1.Service
                 SelectedPerson = employee.BusinessEntity;
                 SelectedPersonHistory = GetEmployeeDepartmentHistory(employee.BusinessEntityId);
                 Shifts = GetShiftsForBusinessEntity(employee.BusinessEntityId);
+
                 OnUserSelected?.Invoke(employee.BusinessEntity);
+
+
+                SelectedPerson = person;
+
+                // Get the employee department history for the selected person
+                SelectedPersonHistory = GetEmployeeDepartmentHistory(person.BusinessEntityId);
+
+                // Trigger the OnUserSelected event
+                OnUserSelected?.Invoke(person);
             }
         }
+
 
 
 
@@ -131,6 +136,8 @@ namespace Display1.Service
         }
 
 
+
+
         public EmployeePayHistory? GetEmployeePayHistory(int businessEntityId)
         {
             return _db.EmployeePayHistory.FirstOrDefault(p => p.BusinessEntityId == businessEntityId);
@@ -150,8 +157,5 @@ namespace Display1.Service
                 .Select(edh => edh.Shift)
                 .ToList();
         }
-
-
-
     }
 }
