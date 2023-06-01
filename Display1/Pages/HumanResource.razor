@@ -113,7 +113,14 @@
                                 }
                                 else if (item == typeof(PayHistory))
                                 {
-                                    <PayHistory />
+                                    if (SearchService.SelectedPerson != null)
+                                    {
+                                        <PayHistory SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
                                 else if (item == typeof(HRPages.Address))
                                 {
