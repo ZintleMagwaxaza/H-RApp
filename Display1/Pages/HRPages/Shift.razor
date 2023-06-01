@@ -38,7 +38,8 @@
 </div>
 
 @code {
-
+    [Parameter]
+    public Person SelectedPerson { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,7 +49,32 @@
         }
         else
         {
+            SearchService.OnUserSelected += HandleUserSelected;
+            await ReloadShifts();
+        }
+    }
+
+    private async Task ReloadShifts()
+    {
+        if (SearchService.SelectedPerson != null)
+        {
             SearchService.Shifts = SearchService.GetShiftsForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void HandleUserSelected(Person person)
+    {
+        SearchService.SelectedPerson = person;
+        _ = ReloadShifts();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (SearchService.SelectedPerson != null)
+        {
+            SearchService.Shifts = SearchService.GetShiftsForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
+            StateHasChanged();
         }
     }
 }

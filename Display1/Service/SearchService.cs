@@ -98,20 +98,19 @@ namespace Display1.Service
             {
                 SelectedPerson = employee.BusinessEntity;
                 SelectedPersonHistory = GetEmployeeDepartmentHistory(employee.BusinessEntityId);
-                Shifts = GetShiftsForBusinessEntity(employee.BusinessEntityId);
 
-                OnUserSelected?.Invoke(employee.BusinessEntity);
-
-
-                SelectedPerson = person;
-
-                // Get the employee department history for the selected person
-                SelectedPersonHistory = GetEmployeeDepartmentHistory(person.BusinessEntityId);
+                // Update the shifts only if the selected person has changed
+                if (SelectedPerson != person)
+                {
+                    Shifts = GetShiftsForBusinessEntity(person.BusinessEntityId);
+                    SelectedPerson = person;
+                }
 
                 // Trigger the OnUserSelected event
                 OnUserSelected?.Invoke(person);
             }
         }
+
 
 
 

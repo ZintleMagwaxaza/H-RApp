@@ -102,7 +102,14 @@
                                 }
                                 else if (item == typeof(HRPages.Shift))
                                 {
-                                   <Shift />
+                                    if (SearchService.SelectedPerson != null)
+                                    {
+                                        <Shift SelectedPerson="SearchService.SelectedPerson" />
+                                    }
+                                    else
+                                    {
+                                        <p>Search and select a User:</p>
+                                    }
                                 }
                                 else if (item == typeof(PayHistory))
                                 {
