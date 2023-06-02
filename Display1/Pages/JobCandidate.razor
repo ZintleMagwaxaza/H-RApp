@@ -24,16 +24,23 @@ else
             </EditCommandTemplate>
         </DataGridCommandColumn>
 
-        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.JobCandidateId)" Caption="Job Candidate ID"></DataGridColumn>
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.JobCandidateId)" Caption="Job Candidate ID"></DataGridColumn>     
+
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="" Caption="First Name"></DataGridColumn>
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="" Caption="Last Name"></DataGridColumn>
+
+
         <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.BusinessEntityId)" Caption="Business Entity ID"></DataGridColumn>
         <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.Resume)" Caption="Resume">
             <DisplayTemplate>
                 @if (!string.IsNullOrEmpty(context.Resume))
                 {
-                    <a href="javascript:void(0);" @onclick="() => ShowResume(context.Resume)">View Resume</a>
+                    <a href="javascript:void(0);" @onclick="() => ShowResume(context.JobCandidateId, context.Resume)">View Resume</a>
                 }
             </DisplayTemplate>
         </DataGridColumn>
+
+
         <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.ModifiedDate)" Caption="Modified Date"></DataGridColumn>
 
     </DataGrid>
@@ -53,11 +60,12 @@ else
         jobcandidate = await jobCandidateService.GetJobCandidateAsync();
     }
 
-    private void ShowResume(string resumeXml)
+    private void ShowResume(int jobCandidateId, string resumeXml)
     {
-        XDocument xDocument = XDocument.Parse(resumeXml);
-        navigationManager.NavigateTo($"/resume?xml={Uri.EscapeDataString(resumeXml)}");
+        navigationManager.NavigateTo($"/resume/{jobCandidateId}?xml={Uri.EscapeDataString(resumeXml)}");
     }
+
+
 
     private async Task NewClicked(Display1.Models.JobCandidate context)
     {

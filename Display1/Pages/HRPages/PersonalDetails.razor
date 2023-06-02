@@ -1,10 +1,9 @@
 ﻿@page "/personaldetails"
 @using Display1.Models
 @using Display1.Service
+@using Display1.Pages.Components
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
-
-
 
 <PageTitle>Index</PageTitle>
 
@@ -49,9 +48,17 @@
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Demographics:</strong>
-                <span>
-                    <a href="javascript:void(0)" @onclick="OpenDemographicsXml" class="xml-link">View XML</a>
-                </span>
+                @if (!string.IsNullOrEmpty(SelectedPerson?.Demographics))
+                {
+                    <span>
+                        <a href="javascript:void(0)" @onclick="OpenDemographicsXml" class="xml-link">Demographics</a>
+                    </span>
+                }
+                else
+                {
+                    <span>No XML available</span>
+                }
+
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>rowguid:</strong>
@@ -62,9 +69,9 @@
                 <span>@(SelectedPerson?.ModifiedDate)</span>
             </li>
             <li>
-            <div>
-                <button class="btn btn-primary">Edit Details</button>
-            </div>
+                <div>
+                    <button class="btn btn-primary">Edit Details</button>
+                </div>
             </li>
         </ul>
     </div>
@@ -86,9 +93,8 @@
     {
         if (SelectedPerson != null)
         {
-            //not working fully
-            string url = $"/demographicsxml/{SelectedPerson.BusinessEntityId}";
-            
+            string url = $"/demographicsxmlviewer?XmlContent={Uri.EscapeDataString(SelectedPerson.Demographics)}";
+            NavigationManager.NavigateTo(url);
         }
     }
 }
