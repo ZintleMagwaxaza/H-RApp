@@ -1,0 +1,79 @@
+﻿@page "/resume/{id:int}"
+@using System.Xml.Linq
+@using Display1.Service
+@inject JobCandidateService jobCandidateService
+
+<h3>Resume</h3>
+
+@if (Xml == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        @RenderResumeElements(resumeElements)
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private string? Xml;
+    private XDocument? resumeDocument;
+    private IEnumerable<XElement>? resumeElements;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadResume();
+    }
+
+    // Resume.razor
+
+    private async Task LoadResume()
+    {
+        var jobCandidate = await jobCandidateService.GetJobCandidateAsync(Id);
+        if (jobCandidate != null)
+        {
+            Xml = jobCandidate.Resume;
+
+            if (Xml != null)
+            {
+                string unescapedXml = Uri.UnescapeDataString(Xml);
+                resumeDocument = XDocument.Parse(unescapedXml);
+                resumeElements = resumeDocument.Root?.Elements();
+            }
+        }
+    }
+
+
+    private RenderFragment RenderResumeElements(IEnumerable<XElement>? elements)
+    {
+        return builder =>
+        {
+            if (elements != null)
+            {
+                foreach (var element in elements)
+                {
+                    builder.OpenElement(0, "h5");
+                    builder.AddContent(1, element.Name.LocalName);
+                    builder.CloseElement();
+
+                    if (element.HasElements)
+                    {
+                        builder.OpenElement(2, "div");
+                        RenderResumeElements(element.Elements())(builder);
+                        builder.CloseElement();
+                    }
+                    else
+                    {
+                        builder.OpenElement(3, "p");
+                        builder.AddContent(4, element.Value);
+                        builder.CloseElement();
+                    }
+                }
+            }
+        };
+    }
+}

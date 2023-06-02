@@ -1,0 +1,50 @@
+﻿@page "/demographicsxmlviewer"
+@using System.Web
+@using System.Xml.Linq
+
+<h4>Demographics XML Viewer</h4>
+
+@if (IndividualSurvey != null)
+{
+    <p>Total Purchase YTD: @IndividualSurvey.TotalPurchaseYTD</p>
+}
+else
+{
+    <p>No XML content available.</p>
+}
+
+@code {
+    public IndividualSurveyData IndividualSurvey { get; set; }
+
+    [Parameter]
+    public string? XmlContent { get; set; }
+
+    [Parameter]
+    public string? SchemaUrl { get; set; }
+
+    [Inject]
+    public NavigationManager? NavigationManager { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(NavigationManager?.Uri ?? string.Empty);
+        var query = HttpUtility.ParseQueryString(uri.Query);
+        XmlContent = query["XmlContent"];
+
+        if (!string.IsNullOrEmpty(XmlContent))
+        {
+            XDocument? xmlDoc = XDocument.Parse(XmlContent);
+            XNamespace xmlns = xmlDoc?.Root?.GetDefaultNamespace() ?? string.Empty;
+
+            IndividualSurvey = new IndividualSurveyData
+                {
+                    TotalPurchaseYTD = xmlDoc?.Root?.Element(xmlns + "TotalPurchaseYTD")?.Value
+                };
+        }
+    }
+
+    public class IndividualSurveyData
+    {
+        public string? TotalPurchaseYTD { get; set; }
+    }
+}
