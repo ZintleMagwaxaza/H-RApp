@@ -2,6 +2,7 @@
 @using Display1.Models
 @using Display1.Service
 @inject EmployeeService EmployeeService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
 <div class="row">
     <div class="col-12">
@@ -42,10 +43,22 @@
                 <strong>Additional Contact Info:</strong>
                 <span>@(SelectedEmployee?.BusinessEntity?.AdditionalContactInfo)</span>
             </li>
+
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Demographics:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.Demographics)</span>
+                @if (!string.IsNullOrEmpty(SelectedEmployee?.BusinessEntity?.Demographics))
+                {
+                    <span>
+                        <a href="javascript:void(0)" @onclick="OpenDemographicsXml" class="xml-link">Demographics</a>
+                    </span>
+                }
+                else
+                {
+                    <span>No XML available</span>
+                }
             </li>
+
+
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>rowguid:</strong>
                 <span>@(SelectedEmployee?.BusinessEntity?.Rowguid)</span>
@@ -64,7 +77,14 @@
 
     protected override void OnInitialized()
     {
-        // Retrieve the employee details with BusinessEntityID 1
+        
         SelectedEmployee = EmployeeService.GetEmployeeByBusinessEntityId(1);
+    }
+    private void OpenDemographicsXml()
+    {
+        string xmlContent = SelectedEmployee?.BusinessEntity?.Demographics;
+
+        
+        NavigationManager.NavigateTo($"/demographicsxmlviewer?XmlContent={Uri.EscapeDataString(xmlContent)}");
     }
 }

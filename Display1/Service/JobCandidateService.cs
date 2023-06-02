@@ -23,5 +23,15 @@ namespace Display1.Service
             _context.JobCandidate.Add(jobCandidate);
             await _context.SaveChangesAsync();
         }
+
+        // JobCandidateService.cs
+
+        public async Task<JobCandidate> GetJobCandidateAsync(int jobCandidateId)
+        {
+            return await _context.JobCandidate.FindAsync(jobCandidateId);
+        }
+
+
+
     }
 }
