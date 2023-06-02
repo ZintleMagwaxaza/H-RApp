@@ -39,18 +39,56 @@ namespace WebApp
 
             public void ConfigureServices(IServiceCollection services)
             {
+               // services.AddMvc();
                 services.AddDbContext<AdventureWorks2019Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
-               
+
+                /*      // Configure Identity
+                      services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                         .AddRoles<ApplicationRole>()
+                         .AddRoleManager<CustomRoleManager>()
+                         .AddUserManager<CustomUserManager>()
+                        .AddUserStore<CustomUserStore>()
+                        //.AddRoleStore<CustomRoleStore>()
+                        .AddEntityFrameworkStores<AdventureWorks2019Context>()
+                        .AddDefaultTokenProviders();
+                      // .AddSignInManager();  */
+
+
+
+
+                /*   services.AddAuthorization(options =>
+                   {
+                       options.AddPolicy("AdminOnly", policy =>
+                       {
+                           policy.RequireRole("Admin");
+                       });
+                   });
+
+                   services.AddHttpContextAccessor();
+                   services.AddLogging(builder =>
+                   {
+                       builder.AddFilter("Microsoft.AspNetCore.Authorization", LogLevel.Debug);
+                       builder.AddConsole();
+                   });*/
+
                 //Search service
+                //services.AddDatabaseDeveloperPageExceptionFilter();
                 services.AddScoped<SearchService>();
                 services.AddSingleton<JobCandidateService>();
                 services.AddScoped<EmployeeService>();
-                
+
 
                 services.AddRazorPages();
                 services.AddServerSideBlazor();
                 services.AddSingleton<WeatherForecastService>();
+                /*services.AddTransient<ApplicationUsersTable>();
+                 services.AddScoped<SignInManager<ApplicationUser>>();
+                services.AddScoped<IUserStore<ApplicationUser>, CustomUserStore>();
+                services.AddScoped<IRoleStore<ApplicationRole>, CustomRoleStore>();
+                services.AddScoped<IUserRoleStore<ApplicationUser>, CustomUserStore>();
+                services.AddScoped<RoleManager<ApplicationRole>>();
+                services.AddScoped<CustomRoleManager>();*/
                 services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
 
 
@@ -62,6 +100,7 @@ namespace WebApp
                 {
 
                 }
+
                 else
                 {
                     app.UseExceptionHandler("/Error");
