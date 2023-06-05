@@ -1,15 +1,14 @@
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Display1.CustomProvider;
 using Display1.Data;
+using Display1.Data.CustomProvider;
 using Display1.Models;
 using Display1.Service;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+
 
 namespace WebApp
 {
@@ -43,7 +42,7 @@ namespace WebApp
                 services.AddDbContext<AdventureWorks2019Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
 
-                /*      // Configure Identity
+                     // Configure Identity
                       services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                          .AddRoles<ApplicationRole>()
                          .AddRoleManager<CustomRoleManager>()
@@ -57,7 +56,7 @@ namespace WebApp
 
 
 
-                /*   services.AddAuthorization(options =>
+                  services.AddAuthorization(options =>
                    {
                        options.AddPolicy("AdminOnly", policy =>
                        {
@@ -70,7 +69,7 @@ namespace WebApp
                    {
                        builder.AddFilter("Microsoft.AspNetCore.Authorization", LogLevel.Debug);
                        builder.AddConsole();
-                   });*/
+                   });
 
                 //Search service
                 //services.AddDatabaseDeveloperPageExceptionFilter();
@@ -82,13 +81,13 @@ namespace WebApp
                 services.AddRazorPages();
                 services.AddServerSideBlazor();
                 services.AddSingleton<WeatherForecastService>();
-                /*services.AddTransient<ApplicationUsersTable>();
+                services.AddTransient<ApplicationUsersTable>();
                  services.AddScoped<SignInManager<ApplicationUser>>();
                 services.AddScoped<IUserStore<ApplicationUser>, CustomUserStore>();
                 services.AddScoped<IRoleStore<ApplicationRole>, CustomRoleStore>();
                 services.AddScoped<IUserRoleStore<ApplicationUser>, CustomUserStore>();
                 services.AddScoped<RoleManager<ApplicationRole>>();
-                services.AddScoped<CustomRoleManager>();*/
+                services.AddScoped<CustomRoleManager>();
                 services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
 
 
