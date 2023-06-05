@@ -1,6 +1,16 @@
-﻿namespace Display1.Areas.Identity.Pages.Account
-{
-    public class LogOut
+﻿@page
+@using Display1.Data.CustomProvider;
+@using Microsoft.AspNetCore.Identity
+@attribute [IgnoreAntiforgeryToken]
+@inject SignInManager<ApplicationUser> SignInManager
+@functions {
+    public async Task<IActionResult> OnPost()
     {
+        if (SignInManager.IsSignedIn(User))
+        {
+            await SignInManager.SignOutAsync();
+        }
+
+        return Redirect("~/");
     }
 }
