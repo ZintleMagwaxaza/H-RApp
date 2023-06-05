@@ -25,6 +25,7 @@ namespace WebApp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
                 });
 
         public class Startup
@@ -38,7 +39,7 @@ namespace WebApp
 
             public void ConfigureServices(IServiceCollection services)
             {
-               // services.AddMvc();
+                services.AddMvc();
                 services.AddDbContext<AdventureWorks2019Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
 
@@ -113,6 +114,7 @@ namespace WebApp
 
                 app.UseAuthentication();
                 app.UseAuthorization();
+
 
                 app.UseEndpoints(endpoints =>
                 {
