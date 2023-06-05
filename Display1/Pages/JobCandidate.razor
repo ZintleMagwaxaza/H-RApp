@@ -24,13 +24,36 @@ else
             </EditCommandTemplate>
         </DataGridCommandColumn>
 
-        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.JobCandidateId)" Caption="Job Candidate ID"></DataGridColumn>     
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.JobCandidateId)" Caption="Job Candidate ID"></DataGridColumn>
 
-        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="" Caption="First Name"></DataGridColumn>
-        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="" Caption="Last Name"></DataGridColumn>
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="" Caption="First Name">
+            <DisplayTemplate>
+                @{
+                    var xml = XDocument.Parse(context.Resume);
+                    var firstName = xml.Root?.Element("{http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/Resume}Name")?.Element("{http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/Resume}Name.First")?.Value;
+                    if (!string.IsNullOrEmpty(firstName))
+                    {
+                        <span>@firstName</span>
+                    }
+                }
+            </DisplayTemplate>
+        </DataGridColumn>
 
+        <DataGridColumn TItem="Display1.Models.JobCandidate" Field="" Caption="Last Name">
+            <DisplayTemplate>
+                @{
+                    var xml = XDocument.Parse(context.Resume);
+                    var lastName = xml.Root?.Element("{http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/Resume}Name")?.Element("{http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/Resume}Name.Last")?.Value;
+                    if (!string.IsNullOrEmpty(lastName))
+                    {
+                        <span>@lastName</span>
+                    }
+                }
+            </DisplayTemplate>
+        </DataGridColumn>
 
         <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.BusinessEntityId)" Caption="Business Entity ID"></DataGridColumn>
+
         <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.Resume)" Caption="Resume">
             <DisplayTemplate>
                 @if (!string.IsNullOrEmpty(context.Resume))
@@ -40,12 +63,9 @@ else
             </DisplayTemplate>
         </DataGridColumn>
 
-
         <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.ModifiedDate)" Caption="Modified Date"></DataGridColumn>
-
     </DataGrid>
 }
-
 
 @code {
     private IEnumerable<Display1.Models.JobCandidate> jobcandidate = new List<Display1.Models.JobCandidate>();
@@ -62,10 +82,9 @@ else
 
     private void ShowResume(int jobCandidateId, string resumeXml)
     {
-        navigationManager.NavigateTo($"/resume/{jobCandidateId}?xml={Uri.EscapeDataString(resumeXml)}");
+        var encodedResumeXml = Uri.EscapeDataString(resumeXml);
+        navigationManager.NavigateTo($"/resume/{jobCandidateId}?xml={encodedResumeXml}");
     }
-
-
 
     private async Task NewClicked(Display1.Models.JobCandidate context)
     {
@@ -77,6 +96,6 @@ else
 
     private void EditClicked(Display1.Models.JobCandidate context)
     {
-     
+
     }
 }
