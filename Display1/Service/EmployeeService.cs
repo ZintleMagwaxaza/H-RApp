@@ -10,8 +10,17 @@ public EmployeeService(AdventureWorks2019Context dbContext)
 {
     this.dbContext = dbContext;
 }
+    public async Task<int> FindBusinessEntityIdByEmailAsync(string email)
+    {
+        var businessEntityId = await dbContext.EmailAddress
+            .Where(e => e.EmailAddress1 == email)
+            .Select(e => e.BusinessEntityId)
+            .FirstOrDefaultAsync();
 
-public Employee GetEmployeeByBusinessEntityId(int businessEntityId)
+        return businessEntityId;
+    }
+
+    public Employee GetEmployeeByBusinessEntityId(int businessEntityId)
 {
     Employee employee = dbContext.Employee
         .Include(e => e.BusinessEntity)
@@ -35,7 +44,14 @@ public Employee GetEmployeeByBusinessEntityId(int businessEntityId)
     return employee;
 }
 
-public async Task<EmployeeDepartmentHistory> GetEmployeeDepartmentByBusinessEntityId(int businessEntityId)
+    public async Task<EmployeeDepartmentHistory> FindEmployeeDepartment(int businessEntityId)
+    {
+        return await dbContext.EmployeeDepartmentHistory
+            .Include(ed => ed.Department)
+            .FirstOrDefaultAsync(ed => ed.BusinessEntityId == businessEntityId);
+    }
+
+    public async Task<EmployeeDepartmentHistory> GetEmployeeDepartmentByBusinessEntityId(int businessEntityId)
 {
     EmployeeDepartmentHistory employeeDepartment = await dbContext.EmployeeDepartmentHistory
         .Include(ed => ed.Department)
@@ -77,11 +93,18 @@ public async Task<EmployeePayHistory> GetEmployeePayHistoryByBusinessEntityId(in
         .FirstOrDefaultAsync(e => e.BusinessEntityId == businessEntityId);
 }
 
-public Address GetAddressForBusinessEntity(int businessEntityId)
-{
-    return dbContext.BusinessEntityAddress
-        .Include(bea => bea.Address)
-        .FirstOrDefault(bea => bea.BusinessEntityId == businessEntityId)?.Address;
-}
+    public Address? GetAddressForBusinessEntity(int businessEntityId)
+    {
+        var businessEntityAddress = dbContext.BusinessEntityAddress
+            .FirstOrDefault(bea => bea.BusinessEntityId == businessEntityId);
+
+        if (businessEntityAddress != null)
+        {
+            return dbContext.Address.FirstOrDefault(a => a.AddressId == businessEntityAddress.AddressId);
+        }
+
+        return null;
+    }
+
 
 }
