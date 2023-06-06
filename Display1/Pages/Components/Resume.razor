@@ -11,7 +11,7 @@
 }
 else
 {
-    <div>
+    <div class="resume-container">
         @RenderResumeElements(resumeElements)
     </div>
 }
@@ -29,8 +29,6 @@ else
         await LoadResume();
     }
 
-    // Resume.razor
-
     private async Task LoadResume()
     {
         var jobCandidate = await jobCandidateService.GetJobCandidateAsync(Id);
@@ -47,30 +45,103 @@ else
         }
     }
 
-
     private RenderFragment RenderResumeElements(IEnumerable<XElement>? elements)
     {
+        var elementMapping = new Dictionary<string, string>
+        {
+            { "Name.First", "First Name: " },
+            { "Name.Middle", "MIddle Name: " },
+            { "Name.Last", "Last Name: " },
+            { "Skills", "Skills: " },
+            { "Employment", "Employment History" },
+
+        { "Emp.StartDate", "Start Date: " },
+        { "Emp.EndDate", "End Date: " },
+        { "Emp.OrgName", "Organisation: " },
+        { "Emp.JobTitle", "Job Title: " },
+        { "Emp.Responsibility", "Responsibility: " },
+        { "Emp.FunctionCategory", "Function Category: " },
+        { "Emp.IndustryCategory", "Industry Category: " },
+
+        { "Loc.State", "State: " },
+        { "Loc.City", "City: " },
+
+         { "Education", "Education" },
+        { "Edu.Level", "Level: " },
+        { "Edu.StartDate", "StartDate: " },
+        { "Edu.EndDate", "EndDate: " },
+        { "Edu.Degree", "Degree: " },
+        { "Edu.Major", "Major: " },
+        { "Edu.Minor", "Minor: " },
+        { "Edu.GPA", "GPA: " },
+        { "Edu.GPAScale", "GPAScale: " },
+        { "Edu.School", "School: " },
+        
+
+        { "Location", "Location " },
+        { "Loc.CountryRegion", "Country: " },
+
+        { "Address", "Address Details " },
+        { "Addr.Type", "Type: " },
+        { "Addr.Street", "Street: " },
+        { "Addr.Location", "Location: " },
+        { "Addr.PostalCode", "PostalCode: " },
+
+
+        { "Telephone", "Telephone Details " },
+        { "Tel.Type", "Type: " },
+        { "Tel.IntlCode", "IntlCode: " },
+        { "Tel.AreaCode", "AreaCode: " },
+        { "Tel.Number", "Number: " },
+
+        { "EMail", "Email Address: " },
+
+        };
+
         return builder =>
         {
             if (elements != null)
             {
                 foreach (var element in elements)
                 {
-                    builder.OpenElement(0, "h5");
-                    builder.AddContent(1, element.Name.LocalName);
-                    builder.CloseElement();
+                    var elementName = element.Name.LocalName;
+                    var elementValue = element.Value;
+
+                    if (elementMapping.TryGetValue(elementName, out var mappedName))
+                    {
+                        if (elementName.StartsWith("Employment") || elementName.StartsWith("Addr.Telephone") || elementName.StartsWith("Telephone") || elementName.StartsWith("Location") || elementName.StartsWith("Education") || elementName.StartsWith("Address"))
+                        {
+                            builder.OpenElement(0, "div");
+                            builder.AddAttribute(1, "class", "list-group-item");
+
+                            builder.OpenElement(2, "h5");
+                            builder.AddAttribute(3, "class", "resume-heading");
+                            builder.AddContent(4, mappedName);
+                            builder.CloseElement();
+
+                            builder.OpenElement(2, "ul");
+                            builder.CloseElement(); 
+                            builder.CloseElement(); 
+                        }
+                        else
+                        {
+                            builder.OpenElement(0, "div");
+                            builder.AddAttribute(1, "class", "list-group-item");
+
+                            builder.OpenElement(2, "li");
+                            builder.AddContent(3, mappedName);
+                            builder.OpenElement(4, "span");
+                            builder.AddContent(5, elementValue);
+                            builder.CloseElement();
+                            builder.CloseElement(); 
+
+                            builder.CloseElement(); 
+                        }
+                    }
 
                     if (element.HasElements)
                     {
-                        builder.OpenElement(2, "div");
-                        RenderResumeElements(element.Elements())(builder);
-                        builder.CloseElement();
-                    }
-                    else
-                    {
-                        builder.OpenElement(3, "p");
-                        builder.AddContent(4, element.Value);
-                        builder.CloseElement();
+                        builder.AddContent(0, RenderResumeElements(element.Elements()));
                     }
                 }
             }
