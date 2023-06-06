@@ -2,7 +2,9 @@
 @using Display1.Models
 @using Display1.Service
 @using Display1.Pages.Components
-@*@inject AdventureWorks2019Context DbContext*@
+@using Blazored.Toast.Services
+@using Blazored.Toast
+@inject AdventureWorks2019Context DbContext
 @inject SearchService SearchService
 @inject EmployeeService EmployeeService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
@@ -100,11 +102,13 @@
             NavigationManager.NavigateTo(url);
         }
     }
-
+    
     private async Task SaveChanges()
     {
         await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
-        NavigationManager.NavigateTo("/humanresource");
+        NavigationManager.NavigateTo("/");
     }
+
+
 }
 
