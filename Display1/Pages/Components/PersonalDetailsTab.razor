@@ -68,6 +68,9 @@
                 <span>@(SelectedEmployee?.BusinessEntity?.ModifiedDate)</span>
             </li>
         </ul>
+
+        <button class="btn btn-primary" @onclick="EnableEditMode">Edit</button>
+
     </div>
 </div>
 
@@ -75,11 +78,30 @@
     [Parameter]
     public Employee SelectedEmployee { get; set; }
 
+    private bool EditMode { get; set; }
+
     protected override void OnInitialized()
     {
         
         SelectedEmployee = EmployeeService.GetEmployeeByBusinessEntityId(1);
     }
+
+    private void EnableEditMode()
+    {
+        EditMode = true;
+    }
+
+    private void DisableEditMode()
+    {
+        EditMode = false;
+    }
+
+    private void UpdateEmployee()
+    {
+    
+        DisableEditMode();
+    }
+
     private void OpenDemographicsXml()
     {
         string xmlContent = SelectedEmployee?.BusinessEntity?.Demographics;
