@@ -1,47 +1,50 @@
-﻿<!-- PersonalDetailsTab.razor -->
-@using Display1.Models
+﻿@using Display1.Models
 @using Display1.Service
+@using Display1.Data.CustomProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject EmployeeService EmployeeService
-@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@inject NavigationManager NavigationManager
 
 <div class="row">
     <div class="col-12">
         <ul class="list-group">
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Person Type:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.PersonType)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.PersonType)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Name Style:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.NameStyle)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.NameStyle)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Title:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.Title)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.Title)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>First Name:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.FirstName)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.FirstName)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Middle Name:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.MiddleName)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.MiddleName)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Last Name:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.LastName)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.LastName)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Suffix:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.Suffix)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.Suffix)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Email Promotion:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.EmailPromotion)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.EmailPromotion)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Additional Contact Info:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.AdditionalContactInfo)</span>
+                <span>@(SelectedEmployee?.BusinessEntity.AdditionalContactInfo)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
@@ -58,16 +61,18 @@
                 }
             </li>
 
-
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>rowguid:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.Rowguid)</span>
+                <span>@(SelectedEmployee?.Rowguid)</span>
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Modified Date:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity?.ModifiedDate)</span>
+                <span>@(SelectedEmployee?.ModifiedDate)</span>
             </li>
         </ul>
+
+        <button class="btn btn-primary" @onclick="EnableEditMode">Edit</button>
+
     </div>
 </div>
 
@@ -75,16 +80,42 @@
     [Parameter]
     public Employee SelectedEmployee { get; set; }
 
+    private bool EditMode { get; set; }
+
     protected override void OnInitialized()
     {
-        
-        SelectedEmployee = EmployeeService.GetEmployeeByBusinessEntityId(1);
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
+
+        string email = user.FindFirstValue(ClaimTypes.Email);
+
+        int businessEntityId = await EmployeeService.FindBusinessEntityIdByEmailAsync(email);
+
+        if (businessEntityId != 0)
+        {
+            SelectedEmployee = EmployeeService.GetEmployeeByBusinessEntityId(businessEntityId);
+        }
     }
+
+    private void EnableEditMode()
+    {
+        EditMode = true;
+    }
+
+    private void DisableEditMode()
+    {
+        EditMode = false;
+    }
+
+    private void UpdateEmployee()
+    {
+    
+        DisableEditMode();
+    }
+
     private void OpenDemographicsXml()
     {
         string xmlContent = SelectedEmployee?.BusinessEntity?.Demographics;
-
-        
         NavigationManager.NavigateTo($"/demographicsxmlviewer?XmlContent={Uri.EscapeDataString(xmlContent)}");
     }
 }

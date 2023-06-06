@@ -1,7 +1,13 @@
 ﻿<!-- EmployeePayHistoryTab.razor -->
 @using Display1.Models
 @using Display1.Service
+@using Display1.Data.CustomProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
+
 
 <div class="row">
     <div class="col-12">
@@ -35,7 +41,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Retrieve EmployeePayHistory based on selected employee ID
-        SelectedEmployeePayHistory = await EmployeeService.GetEmployeePayHistoryByBusinessEntityId(1);
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
+
+        string email = user.FindFirstValue(ClaimTypes.Email);
+
+        int businessEntityId = await EmployeeService.FindBusinessEntityIdByEmailAsync(email);
+
+        if (businessEntityId != 0)
+        {
+           
+            SelectedEmployeePayHistory = await EmployeeService.GetEmployeePayHistoryByBusinessEntityId(businessEntityId);
+        }
     }
+
 }

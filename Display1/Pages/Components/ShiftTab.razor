@@ -1,8 +1,13 @@
 ﻿<!-- Shift.razor -->
-@using Display1.Models;
+@using Display1.Models
 @using Display1.Service
+@using Display1.Data.CustomProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
 
-@inject EmployeeService employeeService
 
 <div class="row">
     <div class="col-md-12">
@@ -39,11 +44,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        int businessEntityId = 1; 
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
+
+        string email = user.FindFirstValue(ClaimTypes.Email);
+
+        int businessEntityId = await EmployeeService.FindBusinessEntityIdByEmailAsync(email);
 
         if (businessEntityId != 0)
         {
-            Shift = await employeeService.GetShiftByBusinessEntityId(businessEntityId);
+           
+            Shift = await EmployeeService.GetShiftByBusinessEntityId(businessEntityId);
         }
     }
+
 }

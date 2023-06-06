@@ -1,7 +1,12 @@
 ﻿<!-- EmployeeDeaprtmentTab.razo -->
 @using Display1.Models
 @using Display1.Service
+@using Display1.Data.CustomProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject EmployeeService EmployeeService
+@inject NavigationManager NavigationManager
 
 <div class="row">
     <div class="col-12">
@@ -43,11 +48,24 @@
 </div>
 
 @code {
+    [Parameter]
+    public int BusinessEntityId { get; set; }
+
     private EmployeeDepartmentHistory SelectedEmployeeDepartment;
 
     protected override async Task OnInitializedAsync()
     {
-        // Retrieve the employee department details for a specific employee
-        SelectedEmployeeDepartment = await EmployeeService.GetEmployeeDepartmentByBusinessEntityId(1);
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
+
+        string email = user.FindFirstValue(ClaimTypes.Email);
+
+        int businessEntityId = await EmployeeService.FindBusinessEntityIdByEmailAsync(email);
+
+        if (businessEntityId != 0)
+        {
+            SelectedEmployeeDepartment = await EmployeeService.FindEmployeeDepartment(businessEntityId);
+        }
     }
+
 }

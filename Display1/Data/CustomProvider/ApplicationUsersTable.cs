@@ -20,6 +20,8 @@ namespace Display1.CustomProvider
             _context = context;
             _roleManager = roleManager;
         }
+
+
         public async Task<ApplicationUser> FindByIdAsync(string LoginId)
         {
             var users = from password in _context.Password
