@@ -9,6 +9,7 @@ using Display1.Service;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Blazored.Toast;
 
 namespace Display1
 {
@@ -61,7 +62,7 @@ namespace Display1
             builder.Services.AddScoped<SearchService>();
             builder.Services.AddScoped<JobCandidateService>();
             builder.Services.AddScoped<EmployeeService>();
-
+           
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddTransient<ApplicationUsersTable>();

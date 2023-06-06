@@ -82,7 +82,7 @@
 
     private bool EditMode { get; set; }
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
         var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authenticationState.User;
