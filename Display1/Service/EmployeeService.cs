@@ -4,84 +4,100 @@ using System.Linq;
 
 public class EmployeeService
 {
-private readonly AdventureWorks2019Context dbContext;
+    private readonly AdventureWorks2019Context dbContext;
 
-public EmployeeService(AdventureWorks2019Context dbContext)
-{
-    this.dbContext = dbContext;
-}
-
-public Employee GetEmployeeByBusinessEntityId(int businessEntityId)
-{
-    Employee employee = dbContext.Employee
-        .Include(e => e.BusinessEntity)
-        .FirstOrDefault(e => e.BusinessEntityId == businessEntityId);
-
-    if (employee != null)
+    public EmployeeService(AdventureWorks2019Context dbContext)
     {
-        Person person = dbContext.Person
-            .FirstOrDefault(p => p.BusinessEntityId == employee.BusinessEntityId);
-
-        if (person != null)
-        {
-            employee.BusinessEntity = person;
-        }
-        else
-        {
-            employee.BusinessEntity = null;
-        }
+        this.dbContext = dbContext;
     }
 
-    return employee;
-}
-
-public async Task<EmployeeDepartmentHistory> GetEmployeeDepartmentByBusinessEntityId(int businessEntityId)
-{
-    EmployeeDepartmentHistory employeeDepartment = await dbContext.EmployeeDepartmentHistory
-        .Include(ed => ed.Department)
-        .FirstOrDefaultAsync(ed => ed.BusinessEntityId == businessEntityId);
-
-    if (employeeDepartment != null)
+    public Employee GetEmployeeByBusinessEntityId(int businessEntityId)
     {
-        Department department = await dbContext.Department
-            .FirstOrDefaultAsync(d => d.DepartmentId == employeeDepartment.DepartmentId);
+        Employee employee = dbContext.Employee
+            .Include(e => e.BusinessEntity)
+            .FirstOrDefault(e => e.BusinessEntityId == businessEntityId);
 
-        if (department != null)
+        if (employee != null)
         {
-            employeeDepartment.Department.Name = department.Name;
-            employeeDepartment.Department.GroupName = department.GroupName;
+            Person person = dbContext.Person
+                .FirstOrDefault(p => p.BusinessEntityId == employee.BusinessEntityId);
+
+            if (person != null)
+            {
+                employee.BusinessEntity = person;
+            }
+            else
+            {
+                employee.BusinessEntity = null;
+            }
         }
+
+        return employee;
     }
 
-    return employeeDepartment;
-}
-
-public async Task<Shift> GetShiftByBusinessEntityId(int businessEntityId)
-{
-    EmployeeDepartmentHistory employeeDepartmentHistory = await dbContext.EmployeeDepartmentHistory
-        .Include(edh => edh.Department)
-        .FirstOrDefaultAsync(edh => edh.BusinessEntityId == businessEntityId);
-
-    if (employeeDepartmentHistory != null)
+    public async Task<EmployeeDepartmentHistory> GetEmployeeDepartmentByBusinessEntityId(int businessEntityId)
     {
-        Shift shift = await dbContext.Shift.FindAsync(employeeDepartmentHistory.ShiftId);
-        return shift;
+        EmployeeDepartmentHistory employeeDepartment = await dbContext.EmployeeDepartmentHistory
+            .Include(ed => ed.Department)
+            .FirstOrDefaultAsync(ed => ed.BusinessEntityId == businessEntityId);
+
+        if (employeeDepartment != null)
+        {
+            Department department = await dbContext.Department
+                .FirstOrDefaultAsync(d => d.DepartmentId == employeeDepartment.DepartmentId);
+
+            if (department != null)
+            {
+                employeeDepartment.Department.Name = department.Name;
+                employeeDepartment.Department.GroupName = department.GroupName;
+            }
+        }
+
+        return employeeDepartment;
     }
 
-    return null;
-}
+    public async Task<Shift> GetShiftByBusinessEntityId(int businessEntityId)
+    {
+        EmployeeDepartmentHistory employeeDepartmentHistory = await dbContext.EmployeeDepartmentHistory
+            .Include(edh => edh.Department)
+            .FirstOrDefaultAsync(edh => edh.BusinessEntityId == businessEntityId);
 
-public async Task<EmployeePayHistory> GetEmployeePayHistoryByBusinessEntityId(int businessEntityId)
-{
-    return await dbContext.EmployeePayHistory
-        .FirstOrDefaultAsync(e => e.BusinessEntityId == businessEntityId);
-}
+        if (employeeDepartmentHistory != null)
+        {
+            Shift shift = await dbContext.Shift.FindAsync(employeeDepartmentHistory.ShiftId);
+            return shift;
+        }
 
-public Address GetAddressForBusinessEntity(int businessEntityId)
-{
-    return dbContext.BusinessEntityAddress
-        .Include(bea => bea.Address)
-        .FirstOrDefault(bea => bea.BusinessEntityId == businessEntityId)?.Address;
-}
+        return null;
+    }
 
+    public async Task<EmployeePayHistory> GetEmployeePayHistoryByBusinessEntityId(int businessEntityId)
+    {
+        return await dbContext.EmployeePayHistory
+            .FirstOrDefaultAsync(e => e.BusinessEntityId == businessEntityId);
+    }
+
+    public Address GetAddressForBusinessEntity(int businessEntityId)
+    {
+        return dbContext.BusinessEntityAddress
+            .Include(bea => bea.Address)
+            .FirstOrDefault(bea => bea.BusinessEntityId == businessEntityId)?.Address;
+    }
+
+    public async Task UpdatePersonDetailsAsync(Person person)
+    { 
+        // Retrieve the existing person record from the database
+       var existingPerson = await dbContext.Person.FirstOrDefaultAsync(p =>
+       p.BusinessEntityId == person.BusinessEntityId);
+       if (existingPerson != null)
+       { existingPerson.FirstName = person.FirstName;
+       existingPerson.MiddleName = person.MiddleName;
+       existingPerson.LastName = person.LastName;
+       existingPerson.AdditionalContactInfo = person.AdditionalContactInfo;
+       await dbContext.SaveChangesAsync(); }
+       else
+       { 
+            throw new InvalidOperationException("Person record not found.");
+       }
+      }
 }

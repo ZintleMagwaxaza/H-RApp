@@ -13,6 +13,9 @@ public partial class Employee
     /// <summary>
     /// Primary key for Employee records.  Foreign key to BusinessEntity.BusinessEntityID.
     /// </summary>
+    /// 
+
+    public Employee Clone() { return (Employee)MemberwiseClone(); }
     public int BusinessEntityId { get; set; }
 
     /// <summary>

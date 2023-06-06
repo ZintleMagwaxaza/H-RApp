@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Display1.Models;
 
@@ -13,6 +14,11 @@ public partial class Person
     /// <summary>
     /// Primary key for Person records.
     /// </summary>
+    /// 
+
+
+ /*   [NotMapped]
+    public Employee BusinessEntity { get; set; }*/
     public int BusinessEntityId { get; set; }
 
     /// <summary>
@@ -75,6 +81,7 @@ public partial class Person
     /// </summary>
     public DateTime ModifiedDate { get; set; }
 
+    [NotMapped]
     public virtual BusinessEntity BusinessEntity { get; set; }
 
     public virtual ICollection<BusinessEntityContact> BusinessEntityContact { get; set; } = new List<BusinessEntityContact>();
