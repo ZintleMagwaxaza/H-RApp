@@ -41,8 +41,8 @@ namespace Display1.Service
             {
                 // Display all employees in alphabetical order by first name
                 SearchResults = _db.Employee
-                    .Include(e => e.BusinessEntity)
-                    .Select(e => e.BusinessEntity)
+                    .Include(e => e.Person)
+                    .Select(e => e.Person)
                     .OrderBy(e => e.FirstName)
                     .ToList();
             }
@@ -58,20 +58,20 @@ namespace Display1.Service
                     SearchResults = _db.Employee
                         .Include(e => e.BusinessEntity)
                         .AsEnumerable()
-                        .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    e.BusinessEntity.LastName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0)
-                        .Select(e => e.BusinessEntity)
+                        .Where(e => e.Person.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    e.Person.LastName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Select(e => e.Person)
                         .OrderBy(e => e.FirstName)
                         .ToList();
                 }
                 else
                 {
                     SearchResults = _db.Employee
-                        .Include(e => e.BusinessEntity)
+                        .Include(e => e.Person)
                         .AsEnumerable()
-                        .Where(e => e.BusinessEntity.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 &&
-                                    e.BusinessEntity.LastName.IndexOf(lastName, StringComparison.OrdinalIgnoreCase) >= 0)
-                        .Select(e => e.BusinessEntity)
+                        .Where(e => e.Person.FirstName.IndexOf(firstName, StringComparison.OrdinalIgnoreCase) >= 0 &&
+                                    e.Person.LastName.IndexOf(lastName, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .Select(e => e.Person)
                         .OrderBy(e => e.FirstName)
                         .ToList();
                 }
@@ -81,8 +81,8 @@ namespace Display1.Service
             {
                 // If no search results, display all employees
                 SearchResults = _db.Employee
-                    .Include(e => e.BusinessEntity)
-                    .Select(e => e.BusinessEntity)
+                    .Include(e => e.Person)
+                    .Select(e => e.Person)
                     .OrderBy(e => e.FirstName)
                     .ToList();
             }
@@ -96,7 +96,7 @@ namespace Display1.Service
             var employee = _db.Employee.FirstOrDefault(e => e.BusinessEntityId == person.BusinessEntityId);
             if (employee != null)
             {
-                SelectedPerson = employee.BusinessEntity;
+                SelectedPerson = employee.Person;
                 SelectedPersonHistory = GetEmployeeDepartmentHistory(employee.BusinessEntityId);
 
                 // Update the shifts only if the selected person has changed

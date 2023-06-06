@@ -81,7 +81,6 @@ public partial class Person
     /// </summary>
     public DateTime ModifiedDate { get; set; }
 
-    [NotMapped]
     public virtual BusinessEntity BusinessEntity { get; set; }
 
     public virtual ICollection<BusinessEntityContact> BusinessEntityContact { get; set; } = new List<BusinessEntityContact>();

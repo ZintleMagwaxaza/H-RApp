@@ -88,7 +88,9 @@ public partial class Employee
     /// </summary>
     public DateTime ModifiedDate { get; set; }
 
-    public virtual Person BusinessEntity { get; set; }
+   
+    public BusinessEntity BusinessEntity { get; set; }
+    public virtual Person Person { get; set; }
 
     public virtual ICollection<EmployeeDepartmentHistory> EmployeeDepartmentHistory { get; set; } = new List<EmployeeDepartmentHistory>();
 

@@ -33,7 +33,7 @@ public EmployeeService(AdventureWorks2019Context dbContext)
     public Employee GetEmployeeByBusinessEntityId(int businessEntityId)
 {
     Employee employee = dbContext.Employee
-        .Include(e => e.BusinessEntity)
+        .Include(e => e.Person)
         .FirstOrDefault(e => e.BusinessEntityId == businessEntityId);
 
         if (employee != null)
@@ -43,11 +43,11 @@ public EmployeeService(AdventureWorks2019Context dbContext)
 
             if (person != null)
             {
-                employee.BusinessEntity = person;
+                employee.Person = person;
             }
             else
             {
-                employee.BusinessEntity = null;
+                employee.Person = null;
             }
         }
 
