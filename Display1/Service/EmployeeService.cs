@@ -20,6 +20,16 @@ public EmployeeService(AdventureWorks2019Context dbContext)
         return businessEntityId;
     }
 
+    //to check for person instead of emoplyee only 
+    public Person GetPersonByBusinessEntityId(int businessEntityId)
+    {
+        Person person = dbContext.Person
+            .FirstOrDefault(p => p.BusinessEntityId == businessEntityId);
+
+        return person;
+    }
+
+    //to check for employee
     public Employee GetEmployeeByBusinessEntityId(int businessEntityId)
 {
     Employee employee = dbContext.Employee

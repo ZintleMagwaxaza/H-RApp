@@ -6,7 +6,10 @@
 
 @if (IndividualSurvey != null)
 {
-    <p>Total Purchase YTD: @IndividualSurvey.TotalPurchaseYTD</p>
+    @foreach (var element in IndividualSurvey.Elements)
+    {
+        <p>@element.Key: @element.Value</p>
+    }
 }
 else
 {
@@ -38,13 +41,14 @@ else
 
             IndividualSurvey = new IndividualSurveyData
                 {
-                    TotalPurchaseYTD = xmlDoc?.Root?.Element(xmlns + "TotalPurchaseYTD")?.Value
+                    Elements = xmlDoc?.Root?.Elements()
+                        .ToDictionary(e => e.Name.LocalName, e => e.Value)
                 };
         }
     }
 
     public class IndividualSurveyData
     {
-        public string? TotalPurchaseYTD { get; set; }
+        public Dictionary<string, string>? Elements { get; set; }
     }
 }
