@@ -2,7 +2,11 @@
 @using Display1.Models
 @using Display1.Service
 @using Display1.Pages.Components
+@using Blazored.Toast.Services
+@using Blazored.Toast
+@inject AdventureWorks2019Context DbContext
 @inject SearchService SearchService
+@inject EmployeeService EmployeeService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
 <PageTitle>Index</PageTitle>
@@ -24,7 +28,7 @@
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>First Name:</strong>
-                <span>@(SelectedPerson?.FirstName)</span>
+                <input type="text" @bind="@SelectedPerson.FirstName" class="form-control" />
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Middle Name:</strong>
@@ -32,7 +36,7 @@
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Last Name:</strong>
-                <span>@(SelectedPerson?.LastName)</span>
+                <input type="text" @bind="@SelectedPerson.LastName" class="form-control" />
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Suffix:</strong>
@@ -70,7 +74,8 @@
             </li>
             <li>
                 <div>
-                    <button class="btn btn-primary">Edit Details</button>
+                    <button class="btn btn-primary" @onclick="SaveChanges">Save Details</button>
+
                 </div>
             </li>
         </ul>
@@ -97,4 +102,13 @@
             NavigationManager.NavigateTo(url);
         }
     }
+    
+    private async Task SaveChanges()
+    {
+        await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
+        NavigationManager.NavigateTo("/");
+    }
+
+
 }
+
