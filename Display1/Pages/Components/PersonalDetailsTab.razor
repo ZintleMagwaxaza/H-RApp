@@ -19,62 +19,65 @@
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Person Type:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.PersonType)</span>
+                <span>@(SelectedEmployee?.Person.PersonType)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Name Style:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.NameStyle)</span>
+                <span>@(SelectedEmployee?.Person.NameStyle)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Title:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.Title)</span>
+                <span>@(SelectedEmployee?.Person.Title)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>First Name:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.FirstName)</span>
+                <span>@(SelectedEmployee?.Person.FirstName)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Middle Name:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.MiddleName)</span>
+                <span>@(SelectedEmployee?.Person.MiddleName)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Last Name:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.LastName)</span>
+                <span>@(SelectedEmployee?.Person.LastName)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Suffix:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.Suffix)</span>
+                <span>@(SelectedEmployee?.Person
+                    .Suffix)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Email Promotion:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.EmailPromotion)</span>
+                <span>
+                    @(SelectedEmployee?.Person
+                    .EmailPromotion)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Additional Contact Info:</strong>
-                <span>@(SelectedEmployee?.BusinessEntity.AdditionalContactInfo)</span>
+                <span>@(SelectedEmployee?.Person.AdditionalContactInfo)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Demographics:</strong>
 
-                @if (!string.IsNullOrEmpty(SelectedEmployee?.BusinessEntity?.Demographics))
+                @if (!string.IsNullOrEmpty(SelectedEmployee?.Person?.Demographics))
 
                 {
 
@@ -150,9 +153,9 @@
 
     private Employee originalEmployee;
 
+    //changed businessEntity to Person
 
-
-    protected async override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
         var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authenticationState.User;
@@ -182,7 +185,7 @@
     private async void SaveChanges()
     {
         // Update the changes in the database
-        await EmployeeService.UpdatePersonDetailsAsync(SelectedEmployee.BusinessEntity);
+        await EmployeeService.UpdatePersonDetailsAsync(SelectedEmployee.Person);
 
 
 
@@ -208,7 +211,7 @@
 
     {
 
-        string xmlContent = SelectedEmployee?.BusinessEntity?.Demographics;
+        string xmlContent = SelectedEmployee?.Person?.Demographics;
         NavigationManager.NavigateTo($"/demographicsxmlviewer?XmlContent={Uri.EscapeDataString(xmlContent)}");
 
     }
