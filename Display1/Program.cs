@@ -2,13 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Display1.Data.CustomProvider;
 using Display1.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Display1.CustomProvider;
-using System.Security.Claims;
-using static System.Formats.Asn1.AsnWriter;
 using Display1.Data;
 using Display1.Service;
 using Blazorise;
@@ -32,8 +27,6 @@ namespace Display1
             //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
-
-
             // Configure Identity
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                .AddRoles<ApplicationRole>()
@@ -43,6 +36,7 @@ namespace Display1
               //.AddRoleStore<CustomRoleStore>()
               .AddEntityFrameworkStores<AdventureWorks2019Context>()
               .AddDefaultTokenProviders();
+
             // .AddSignInManager();
 
             builder.Services.AddAuthorization(options =>
@@ -77,6 +71,7 @@ namespace Display1
             builder.Services.AddScoped<RoleManager<ApplicationRole>>();
             builder.Services.AddScoped<CustomRoleManager>();
             builder.Services.AddBlazorise().AddBootstrapProviders().AddFontAwesomeIcons();
+            builder.Services.AddScoped<UserManager<ApplicationUser>>();
 
             // builder.Services.AddScoped<RoleManager>();
 
