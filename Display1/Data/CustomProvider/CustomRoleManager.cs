@@ -7,7 +7,7 @@ using System.Security.Claims;
 public class CustomRoleManager : RoleManager<ApplicationRole> /*IUserRoleStore<ApplicationRole>*/
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    string[] _adminEmails = { "rob0@adventure-works.com", "roc0@adventure-works.com", "rus0@adventure-works.com", "ken0@adventure-works.com" };
+    string[] _adminEmails = { "ken0@adventure-works.com" };
     public string[] AdminEmails => _adminEmails;
     public CustomRoleManager(IRoleStore<ApplicationRole> store, IEnumerable<IRoleValidator<ApplicationRole>> roleValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, ILogger<RoleManager<ApplicationRole>> logger, UserManager<ApplicationUser> userManager) : base(store, roleValidators, keyNormalizer, errors, logger)
     {
