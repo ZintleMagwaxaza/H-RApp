@@ -14,15 +14,15 @@
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Address Line 1:</strong>
-                <span>@(SearchService.SelectedAddress?.AddressLine1)</span>
+                <input type="text" @bind="@SearchService.SelectedAddress.AddressLine1" />
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Address Line 2:</strong>
-                <span>@(SearchService.SelectedAddress?.AddressLine2)</span>
+                <input type="text" @bind="@SearchService.SelectedAddress.AddressLine2" />
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>City:</strong>
-                <span>@(SearchService.SelectedAddress?.City)</span>
+                <input type="text" @bind="@SearchService.SelectedAddress.City" />
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>State Province ID:</strong>
@@ -30,7 +30,7 @@
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>PostalCode:</strong>
-                <span>@(SearchService.SelectedAddress?.PostalCode)</span>
+                <input type="text" @bind="@SearchService.SelectedAddress.PostalCode" />
             </li>
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>rowguid:</strong>
@@ -43,6 +43,8 @@
         </ul>
     </div>
 </div>
+
+<button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
 
 @code {
     [Parameter]
@@ -65,7 +67,15 @@
         if (SearchService.SelectedPerson != null)
         {
             SearchService.SelectedAddress = SearchService.GetAddressForBusinessEntity(SearchService.SelectedPerson.BusinessEntityId);
-            StateHasChanged(); // Refresh the component to update the fields
+            StateHasChanged(); 
         }
+    }
+
+    private async Task SaveChanges()
+    {
+       
+        await SearchService.UpdateAddress(SearchService.SelectedAddress);
+
+        NavigationManager.NavigateTo("/");
     }
 }

@@ -112,9 +112,6 @@ namespace Display1.Service
         }
 
 
-
-
-
         public EmployeeDepartmentHistory? GetEmployeeDepartmentHistory(int businessEntityId)
         {
             EmployeeDepartmentHistory employeeDepartmentHistory = _db.EmployeeDepartmentHistory
@@ -156,5 +153,16 @@ namespace Display1.Service
                 .Select(edh => edh.Shift)
                 .ToList();
         }
+
+        public async Task UpdateAddress(Address address)
+        {
+            if (address != null)
+            {
+                _db.Entry(address).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+        }
     }
+
+
 }
