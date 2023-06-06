@@ -30,5 +30,5 @@ public partial class BusinessEntity
     public virtual ICollection<BusinessEntityContact> BusinessEntityContact { get; set; } = new List<BusinessEntityContact>();
 
     public virtual Person Person { get; set; }
-    public object FirstName { get; internal set; }
+    public virtual Employee Employee { get; internal set; }
 }

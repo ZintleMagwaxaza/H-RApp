@@ -414,7 +414,10 @@ public partial class AdventureWorks2019Context : DbContext
             entity.Property(e => e.SickLeaveHours).HasComment("Number of available sick leave hours.");
             entity.Property(e => e.VacationHours).HasComment("Number of available vacation hours.");
 
-            entity.HasOne(d => d.BusinessEntity).WithOne(p => p.Employee)
+            entity.HasOne(e => e.BusinessEntity).WithOne(e => e.Employee)
+                .HasForeignKey<Employee>(d => d.BusinessEntityId);
+
+            entity.HasOne(d => d.Person).WithOne(p => p.Employee)
                 .HasForeignKey<Employee>(d => d.BusinessEntityId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
