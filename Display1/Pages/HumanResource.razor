@@ -1,10 +1,16 @@
 ﻿@page "/humanresource"
+@using Display1.Data.CustomProvider;
 @using Display1.Service
 @using Display1.Models
 @using Display1.Pages.HRPages
 @inject SearchService SearchService
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> userManager
+@inject IHttpContextAccessor httpContext
+@inject IRoleStore<ApplicationRole> roleStore
+@*@inject NavigationManager navigationManager*@
 
 
 <style>
@@ -198,5 +204,36 @@
         NavigationManager.NavigateTo("/personaldetails");
     }
 
+    private IList<string> userRoles;
 
+    [Inject]
+    public CustomRoleManager CustomRoleManager { get; set; }
+
+    [Authorize(Roles = "Admin")]
+    protected override async Task OnInitializedAsync()
+    {
+        var user = httpContext.HttpContext?.User;
+
+        if (user != null && user.Identity?.IsAuthenticated == true)
+        {
+            var userId = userManager.GetUserId(user);
+            var applicationUser = await userManager.FindByIdAsync(userId);
+
+            if (applicationUser != null)
+            {
+                var isAdmin = CustomRoleManager.AdminEmails.Contains(applicationUser.Email);
+
+                if (!isAdmin)
+                {
+
+                    NavigationManager.NavigateTo("/accessdenied");
+                }
+            }
+        }
+        else
+        {
+
+            NavigationManager.NavigateTo("/login");
+        }
+    }
 }

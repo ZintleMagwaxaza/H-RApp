@@ -70,6 +70,9 @@
                 <span>@(SelectedEmployee?.ModifiedDate)</span>
             </li>
         </ul>
+
+        <button class="btn btn-primary" @onclick="EnableEditMode">Edit</button>
+
     </div>
 </div>
 
@@ -77,7 +80,9 @@
     [Parameter]
     public Employee SelectedEmployee { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private bool EditMode { get; set; }
+
+    protected override void OnInitialized()
     {
         var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authenticationState.User;
@@ -92,7 +97,21 @@
         }
     }
 
+    private void EnableEditMode()
+    {
+        EditMode = true;
+    }
 
+    private void DisableEditMode()
+    {
+        EditMode = false;
+    }
+
+    private void UpdateEmployee()
+    {
+    
+        DisableEditMode();
+    }
 
     private void OpenDemographicsXml()
     {
