@@ -107,13 +107,13 @@
 
 
 
-    public int BusinessEntityId { get; set; }
+    public int Id { get; set; }
 
     private async Task SaveChanges()
     {
         await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
         
-        NavigationManager.NavigateTo($"/humanresource/{BusinessEntityId}/employeeDepartment");
+        NavigationManager.NavigateTo($"/humanresource/{Id:int}");
     }
 
 
