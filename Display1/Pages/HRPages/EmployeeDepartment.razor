@@ -5,8 +5,6 @@
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
-
-
 @if (SearchService.SelectedPersonHistory != null)
 {
     <div class="row">
@@ -30,7 +28,11 @@
                 </li>
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Shift Id:</strong>
-                    <span>@(SearchService.SelectedPersonHistory.ShiftId)</span>
+                    <select id="shiftIdDropdown" @bind="@SearchService.SelectedPersonHistory.ShiftId">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
                 </li>
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Start Date:</strong>
@@ -64,16 +66,4 @@
             SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
         }
     }
-
-    protected override void OnParametersSet()
-    {
-        if (SearchService.SelectedPerson != null)
-        {
-            SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
-            StateHasChanged(); // Refresh the component to update the fields
-        }
-    }
 }
-
-
-
