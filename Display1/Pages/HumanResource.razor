@@ -1,4 +1,4 @@
-﻿@page "/humanresource"
+﻿@page "/humanresource/{Id:int}"
 @using Display1.Data.CustomProvider;
 @using Display1.Service
 @using Display1.Models
@@ -11,6 +11,8 @@
 @inject IHttpContextAccessor httpContext
 @inject IRoleStore<ApplicationRole> roleStore
 @*@inject NavigationManager navigationManager*@
+@*/{tab:int}/{BUsinessEntityId:int}*@
+@*/{BusinessEntityId:int}/{Tab?}*@
 
 
 <style>
@@ -43,6 +45,7 @@
             background-color: #e9ecef;
         }
 </style>
+
 
 <div class="container">
     <div class="row">
@@ -99,7 +102,7 @@
                                 {
                                     @if (SearchService.SelectedPerson != null)
                                     {
-                                        <EmployeeDepartment SelectedPerson="SearchService.SelectedPerson" />
+                                       <EmployeeDepartment SelectedPerson="SearchService.SelectedPerson" />
                                     }
                                     else
                                     {
@@ -148,11 +151,11 @@
     </div>
 </div>
 
-
 @code {
     int selected;
     Type[] types = { typeof(PersonalDetails), typeof(EmployeeDepartment), typeof(HRPages.Shift), typeof(PayHistory), typeof(HRPages.Address) };
-
+     [Parameter]
+    public int BusinessEntityId { get; set; }
     string GetTabName(Type type)
     {
         if (type == typeof(PersonalDetails))

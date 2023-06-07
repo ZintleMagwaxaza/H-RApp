@@ -1,4 +1,4 @@
-﻿@page "/personaldetails"
+﻿@page "/personaldetail"
 @using Display1.Models
 @using Display1.Service
 @using Display1.Pages.Components
@@ -85,14 +85,14 @@
 @code {
     [Parameter]
     public Person SelectedPerson { get; set; }
-    public int selected{ get; set; }
+    private int selectedTab;
 
     protected override void OnInitialized()
     {
         if (SelectedPerson == null)
         {
             NavigationManager.NavigateTo("/humanresource");
-            
+
         }
     }
 
@@ -104,16 +104,18 @@
             NavigationManager.NavigateTo(url);
         }
     }
-    
-    
+
+
+
+    public int BusinessEntityId { get; set; }
+
     private async Task SaveChanges()
     {
         await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
-
-
-        NavigationManager.NavigateTo("/humanresource?tab=1");
         
+        NavigationManager.NavigateTo($"/humanresource/{BusinessEntityId}/employeeDepartment");
     }
+
 
 
 }
