@@ -127,7 +127,9 @@ public async Task<EmployeePayHistory> GetEmployeePayHistoryByBusinessEntityId(in
         {
          
             existingPerson.FirstName = person.FirstName;
+            existingPerson.MiddleName = person.MiddleName;
             existingPerson.LastName = person.LastName;
+            existingPerson.AdditionalContactInfo = person.AdditionalContactInfo;
 
            
             await dbContext.SaveChangesAsync();
