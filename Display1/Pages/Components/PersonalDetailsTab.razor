@@ -19,65 +19,119 @@
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Person Type:</strong>
-                <span>@(SelectedEmployee?.Person.PersonType)</span>
+                <span>@(SelectedPerson?.PersonType)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Name Style:</strong>
-                <span>@(SelectedEmployee?.Person.NameStyle)</span>
+                <span>@(SelectedPerson?.NameStyle)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Title:</strong>
-                <span>@(SelectedEmployee?.Person.Title)</span>
+                <span>@(SelectedPerson?.Title)</span>
             </li>
+            
+            @*Editing First Name*@
 
             <li class="list-group-item" style="list-style-type: none;">
 
+                @if (IsEditing)
+                {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>First Name:</strong>
+                    <input type="text" bind="SelectedPerson.FirstName" class="form-control" />
+                </li>
+                }
+                else
+                {
+                <li class="list-group-item" style="list-style-type: none;">
                 <strong>First Name:</strong>
-                <span>@(SelectedEmployee?.Person.FirstName)</span>
+                    <span>@(SelectedPerson?.FirstName)</span>
+                </li>
+                }
             </li>
+
+
+            @*Editing Middle Name*@
 
             <li class="list-group-item" style="list-style-type: none;">
 
-                <strong>Middle Name:</strong>
-                <span>@(SelectedEmployee?.Person.MiddleName)</span>
+                @if (IsEditing)
+                {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Middle Name:</strong>
+                    <input type="text" bind="SelectedPerson.MiddleName" class="form-control" />
+                </li>
+                }
+                else
+                {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Middle Name:</strong>
+                    <span>@(SelectedPerson?.MiddleName)</span>
+                </li>
+                }
+            </li>
+
+            @*Editing Last Name*@
+            <li class="list-group-item" style="list-style-type: none;">
+
+                @if (IsEditing)
+                {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Last Name:</strong>
+                    <input type="text" bind="SelectedPerson.LastName" class="form-control" />
+                </li>
+                }
+                else
+                {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Last Name:</strong>
+                    <span>@(SelectedPerson?.LastName)</span>
+                </li>
+                }
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
-
-                <strong>Last Name:</strong>
-                <span>@(SelectedEmployee?.Person.LastName)</span>
-            </li>
-
-            <li class="list-group-item" style="list-style-type: none;">
-
                 <strong>Suffix:</strong>
-                <span>@(SelectedEmployee?.Person
-                    .Suffix)</span>
+                <span>@(SelectedPerson?.Suffix)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Email Promotion:</strong>
                 <span>
-                    @(SelectedEmployee?.Person
-                    .EmailPromotion)</span>
+                    @(SelectedPerson?.EmailPromotion)</span>
             </li>
+
+            @*Editing Additional Contact Info*@
 
             <li class="list-group-item" style="list-style-type: none;">
 
-                <strong>Additional Contact Info:</strong>
-                <span>@(SelectedEmployee?.Person.AdditionalContactInfo)</span>
+                @if (IsEditing)
+                {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Additional Contact Info:</strong>
+                    <input type="text" bind="SelectedPerson.AdditionalContactInfo" class="form-control" />
+                </li>
+                }
+                else
+                {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Additional Contact Info:</strong>
+                    <span>@(SelectedPerson?.AdditionalContactInfo)</span>
+                </li>
+                }
             </li>
+
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Demographics:</strong>
 
-                @if (!string.IsNullOrEmpty(SelectedEmployee?.Person?.Demographics))
+                @if (!string.IsNullOrEmpty(SelectedPerson?.Demographics))
 
                 {
 
@@ -102,13 +156,13 @@
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>rowguid:</strong>
-                <span>@(SelectedEmployee?.Rowguid)</span>
+                <span>@(SelectedPerson?.Rowguid)</span>
             </li>
 
             <li class="list-group-item" style="list-style-type: none;">
 
                 <strong>Modified Date:</strong>
-                <span>@(SelectedEmployee?.ModifiedDate)</span>
+                <span>@(SelectedPerson?.ModifiedDate)</span>
             </li>
 
         </ul>
@@ -118,7 +172,7 @@
             @if (IsEditing)
 
             {
-
+                
                 <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
 
                 <button class="btn btn-secondary ml-2" @onclick="CancelEdit">Cancel</button>
@@ -145,13 +199,10 @@
 
     [Parameter]
 
-    public Employee SelectedEmployee { get; set; }
-
-
+    public Person SelectedPerson { get; set; }
 
     private bool IsEditing = false;
-
-    private Employee originalEmployee;
+    private Person originalPerson;
 
     //changed businessEntity to Person
 
@@ -166,7 +217,7 @@
 
         if (businessEntityId != 0)
         {
-            SelectedEmployee = EmployeeService.GetEmployeeByBusinessEntityId(businessEntityId);
+            SelectedPerson = EmployeeService.GetPersonByBusinessEntityId(businessEntityId);
         }
     }
 
@@ -175,34 +226,23 @@
     private void StartEdit()
 
     {
-
         IsEditing = true;
-
     }
 
 
 
-    private async void SaveChanges()
+    private async Task SaveChanges()
     {
         // Update the changes in the database
-        await EmployeeService.UpdatePersonDetailsAsync(SelectedEmployee.Person);
-
-
-
+        await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
         IsEditing = false;
-        originalEmployee = SelectedEmployee.Clone();
     }
 
-
-
-    private void CancelEdit()
+    private async Task CancelEdit()
 
     {
-
-        SelectedEmployee = originalEmployee;
-
+        await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
         IsEditing = false;
-
     }
 
 
@@ -210,9 +250,7 @@
     private void OpenDemographicsXml()
 
     {
-
-        string xmlContent = SelectedEmployee?.Person?.Demographics;
+        string xmlContent = SelectedPerson?.Demographics;
         NavigationManager.NavigateTo($"/demographicsxmlviewer?XmlContent={Uri.EscapeDataString(xmlContent)}");
-
     }
 }

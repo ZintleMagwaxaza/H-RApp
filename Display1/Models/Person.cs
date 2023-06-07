@@ -16,6 +16,8 @@ public partial class Person
     /// </summary>
     /// 
 
+    
+
 
  /*   [NotMapped]
     public Employee BusinessEntity { get; set; }*/
