@@ -21,6 +21,7 @@ namespace Display1.Service
         public event Action<Person> OnUserSelected;
         public List<JobCandidate> JobCandidates { get; set; }
 
+        public string ShiftCode { get; set; } // Added ShiftCode property
 
 
         public SearchService(AdventureWorks2019Context dbContext)
