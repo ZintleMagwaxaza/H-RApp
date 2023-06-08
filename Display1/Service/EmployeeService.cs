@@ -146,6 +146,27 @@ public async Task<EmployeePayHistory> GetEmployeePayHistoryByBusinessEntityId(in
         }
     }
 
+    public async Task UpdatePersonAddressAsync(Address address)
+    {
+        // Retrieve the existing person record from the database
+        var existingAddress = await dbContext.Address.FindAsync(address.AddressId);
+
+        if (existingAddress != null)
+        {
+            existingAddress.AddressLine1 = address.AddressLine1;
+            existingAddress.AddressLine2 = address.AddressLine2;
+            existingAddress.Rowguid = address.Rowguid;
+            existingAddress.BusinessEntityAddress = address.BusinessEntityAddress;
+            existingAddress.City = address.City;
+            existingAddress.ModifiedDate = address.ModifiedDate;
+            existingAddress.StateProvinceId = address.StateProvinceId;
+            existingAddress.PostalCode = address.PostalCode;
+            existingAddress.StateProvince = address.StateProvince;
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
 
 
 

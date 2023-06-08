@@ -99,25 +99,12 @@
                     @(SelectedPerson?.EmailPromotion)</span>
             </li>
 
-            @*Editing Additional Contact Info*@
 
-            <li class="list-group-item" style="list-style-type: none;">
-
-                @if (IsEditing)
-                {
-                <li class="list-group-item" style="list-style-type: none;">
-                    <strong>Additional Contact Info:</strong>
-                    <input type="text" @bind="SelectedPerson.AdditionalContactInfo" class="form-control" />
-                </li>
-                }
-                else
-                {
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Additional Contact Info:</strong>
                     <span>@(SelectedPerson?.AdditionalContactInfo)</span>
                 </li>
-                }
-            </li>
+               
 
 
             <li class="list-group-item" style="list-style-type: none;">
