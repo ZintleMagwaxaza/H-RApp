@@ -118,25 +118,34 @@ public async Task<EmployeePayHistory> GetEmployeePayHistoryByBusinessEntityId(in
 
     //For edits 
 
+    /* public async Task UpdatePersonAsync(Person person)
+     {
+         dbContext.Person.Add(person);
+         await dbContext.SaveChangesAsync();
+     }*/
+
+
     public async Task UpdatePersonDetailsAsync(Person person)
     {
         // Retrieve the existing person record from the database
-        var existingPerson = dbContext.Person.FirstOrDefault(p => p.BusinessEntityId == person.BusinessEntityId);
+        var existingPerson = await dbContext.Person.FindAsync(person.BusinessEntityId);
 
         if (existingPerson != null)
         {
-         
             existingPerson.FirstName = person.FirstName;
+            existingPerson.MiddleName = person.MiddleName;
             existingPerson.LastName = person.LastName;
+            existingPerson.AdditionalContactInfo = person.AdditionalContactInfo;
+            existingPerson.Rowguid = person.Rowguid;
+            existingPerson.EmailPromotion = person.EmailPromotion;
+            existingPerson.ModifiedDate = person.ModifiedDate;
+            existingPerson.PersonType = person.PersonType;
+            existingPerson.NameStyle = person.NameStyle;
 
-           
             await dbContext.SaveChangesAsync();
         }
-        else
-        {
-            throw new InvalidOperationException("Person record not found.");
-        }
     }
+
 
 
 
