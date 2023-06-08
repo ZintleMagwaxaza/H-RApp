@@ -15,14 +15,13 @@
 else
 {
     <DataGrid TItem="Display1.Models.JobCandidate" Data="@jobcandidate" Sortable="true" Editable="true" ShowPager="true">
-        <DataGridCommandColumn TItem="Display1.Models.JobCandidate" Caption="Actions" Width="150px">
-            <NewCommandTemplate>
-                <Button Color="Color.Success" Clicked="@context.Clicked">New</Button>
-            </NewCommandTemplate>
-            <EditCommandTemplate>
-                <Button Color="Color.Primary" Clicked="@context.Clicked">Edit</Button>
-            </EditCommandTemplate>
-        </DataGridCommandColumn>
+        <NewCommandTemplate>
+            <Button Color="Color.Success" Clicked="@(async () => await NewClicked(null))">New</Button>
+        </NewCommandTemplate>
+        <EditCommandTemplate>
+            <Button Color="Color.Primary" Clicked="@(e => EditClicked(e))">Edit</Button>
+        </EditCommandTemplate>
+
 
         <DataGridColumn TItem="Display1.Models.JobCandidate" Field="@nameof(Display1.Models.JobCandidate.JobCandidateId)" Caption="Job Candidate ID"></DataGridColumn>
 
@@ -77,25 +76,23 @@ else
 
     private async Task LoadJobCandidates()
     {
-        jobcandidate = await jobCandidateService.GetJobCandidateAsync();
+        jobcandidate = await jobCandidateService.GetJobCandidatesAsync();
+    }
+
+    private async Task NewClicked(JobCandidate context)
+    {
+        navigationManager.NavigateTo("/jobcandidate/new");
+
+    }
+
+    private void EditClicked(MouseEventArgs e)
+    {
+        // Method logic goes here
     }
 
     private void ShowResume(int jobCandidateId, string resumeXml)
     {
         var encodedResumeXml = Uri.EscapeDataString(resumeXml);
         navigationManager.NavigateTo($"/resume/{jobCandidateId}?xml={encodedResumeXml}");
-    }
-
-    private async Task NewClicked(Display1.Models.JobCandidate context)
-    {
-        var newJobCandidate = new Display1.Models.JobCandidate();
-        newJobCandidate.ModifiedDate = DateTime.Now;
-        await jobCandidateService.CreateJobCandidateAsync(newJobCandidate);
-        await LoadJobCandidates();
-    }
-
-    private void EditClicked(Display1.Models.JobCandidate context)
-    {
-
     }
 }
