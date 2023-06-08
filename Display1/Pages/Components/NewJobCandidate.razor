@@ -1,0 +1,61 @@
+﻿@page "/jobcandidate/new"
+@using Blazorise
+@using Display1.Models
+@using Display1.Service
+@using System.Xml.Linq
+@inject JobCandidateService jobCandidateService
+@inject NavigationManager navigationManager
+
+<PageTitle>New Job Candidate</PageTitle>
+
+<div class="container">
+    <h4>Personal Information</h4>
+    <Button Color="Color.Success" Clicked="SaveClicked">Save</Button>
+    <Button Color="Color.Secondary" Clicked="CancelClicked">Cancel</Button>
+</div>
+
+@code {
+    private string ?firstName;
+    private string ?lastName;
+    private string ?skills;
+
+    private async Task SaveClicked()
+    {
+        var newJobCandidate = new JobCandidate
+            {
+                ModifiedDate = DateTime.Now,
+                Resume = GenerateXmlResume()
+            };
+
+        await jobCandidateService.CreateJobCandidateAsync(newJobCandidate);
+
+        await jobCandidateService.LoadJobCandidatesAsync();
+
+        navigationManager.NavigateTo("/jobcandidate");
+    }
+
+    private string GenerateXmlResume()
+    {
+        XDocument doc = new XDocument(
+            new XElement("Resume",
+                new XElement("FirstName", firstName),
+                new XElement("LastName", lastName),
+                new XElement("Skills", skills)
+            )
+        );
+
+        return doc.ToString();
+    }
+
+    private int GenerateJobCandidateId()
+    {
+       
+        var newId = Guid.NewGuid();
+        return Math.Abs(newId.GetHashCode());
+    }
+
+    private void CancelClicked()
+    {
+        navigationManager.NavigateTo("/jobcandidate");
+    }
+}
