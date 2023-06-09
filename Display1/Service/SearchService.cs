@@ -90,6 +90,8 @@ namespace Display1.Service
 
             SelectedPerson = null;
         }
+        
+       
 
 
         public void SelectUser(Person person)
@@ -163,7 +165,95 @@ namespace Display1.Service
                 await _db.SaveChangesAsync();
             }
         }
+
+        /* public async Task UpdateEmployeeDepartmentHistory(EmployeeDepartmentHistory history)
+         {
+             if (history != null)
+             {
+                 var existingHistory = await _db.EmployeeDepartmentHistory.FindAsync(
+      history.BusinessEntityId,
+      (short)history.DepartmentId, // Cast to short if needed
+      (byte)history.ShiftId,
+      (DateTime)history.StartDate
+  );
+
+                 if (existingHistory != null)
+                 {
+                     _db.EmployeeDepartmentHistory.Remove(existingHistory);
+                     await _db.SaveChangesAsync();
+                 }
+
+                 _db.EmployeeDepartmentHistory.Add(history);
+                 await _db.SaveChangesAsync();
+             }
+         }*/
+
+
+        public async Task SaveChangesAsync()
+        {
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task UpdateEmployeeDepartmentHistory(EmployeeDepartmentHistory employeeDepartmentHistory, int newShiftId)
+        {
+            using (var context = new AdventureWorks2019Context())
+            {
+                try
+                {
+                    // Find the existing entity
+                    var existingEntity = context.EmployeeDepartmentHistory
+                        .FirstOrDefault(e => e.BusinessEntityId == employeeDepartmentHistory.BusinessEntityId
+                                             && e.DepartmentId == employeeDepartmentHistory.DepartmentId
+                                             && e.StartDate == employeeDepartmentHistory.StartDate);
+
+                    if (existingEntity != null)
+                    {
+                        
+                        context.EmployeeDepartmentHistory.Remove(existingEntity);
+                       await  context.SaveChangesAsync();
+                    }
+
+                  
+                    var newEntity = new EmployeeDepartmentHistory
+                    {
+                        BusinessEntityId = employeeDepartmentHistory.BusinessEntityId,
+                        DepartmentId = employeeDepartmentHistory.DepartmentId,
+                        StartDate = employeeDepartmentHistory.StartDate,
+                        EndDate = employeeDepartmentHistory.EndDate,
+                        ModifiedDate = employeeDepartmentHistory.ModifiedDate,
+                        ShiftId = (byte)newShiftId
+                    };
+
+                    // Add the new entity and save changes
+                    context.EmployeeDepartmentHistory.Add(newEntity);
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Throw the exception to be handled by the calling code
+                    throw new Exception("An error occurred while updating the employee department history.", ex);
+                }
+            }
+        }
+
+
+
+
+
+
+
     }
 
 
+
+
+
+
+
+
+
+
+
 }
+
+

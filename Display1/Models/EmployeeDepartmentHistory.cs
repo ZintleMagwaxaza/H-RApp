@@ -45,4 +45,5 @@ public partial class EmployeeDepartmentHistory
     public virtual Department Department { get; set; }
 
     public virtual Shift Shift { get; set; }
+    
 }

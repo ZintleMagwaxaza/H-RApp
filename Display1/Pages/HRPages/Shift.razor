@@ -52,6 +52,9 @@
             SearchService.OnUserSelected += HandleUserSelected;
             await ReloadShifts();
         }
+
+        // Subscribe to an event triggered when changes are saved
+        //SearchService.OnShiftsUpdated += HandleShiftsUpdated;
     }
 
     private async Task ReloadShifts()
@@ -66,6 +69,13 @@
     private void HandleUserSelected(Person person)
     {
         SearchService.SelectedPerson = person;
+        _ = ReloadShifts();
+    }
+
+    private void HandleShiftsUpdated()
+    {
+        // Handle the event when shifts are updated
+        // This method will be triggered when changes are saved in the EmployeeDepartmentHistory page
         _ = ReloadShifts();
     }
 
