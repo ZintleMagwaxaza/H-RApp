@@ -1,7 +1,7 @@
 ﻿@page "/employeedepartmenthistory"
 @using Display1.Service
 @using Display1.Models;
-
+@inject AdventureWorks2019Context context
 @inject SearchService SearchService
 @inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
 
@@ -10,6 +10,7 @@
     <div class="row">
         <div class="col-12">
             <ul class="list-group">
+                <!-- Department details -->
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Business Entity Id:</strong>
                     <span>@(SearchService.SelectedPersonHistory.BusinessEntityId)</span>
@@ -26,6 +27,7 @@
                     <strong>Department Group:</strong>
                     <span>@(SearchService.SelectedPersonHistory?.Department?.GroupName)</span>
                 </li>
+                <!-- Shift details -->
                 <li class="list-group-item" style="list-style-type: none;">
                     <strong>Shift Id:</strong>
                     <select id="shiftIdDropdown" @bind="@SearchService.SelectedPersonHistory.ShiftId">
@@ -47,6 +49,8 @@
                     <span>@(SearchService.SelectedPersonHistory.ModifiedDate)</span>
                 </li>
             </ul>
+            <!-- Save changes button -->
+            <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
         </div>
     </div>
 }
@@ -65,5 +69,12 @@
         {
             SearchService.SelectedPersonHistory = SearchService.GetEmployeeDepartmentHistory(SearchService.SelectedPerson.BusinessEntityId);
         }
+    }
+
+    private async Task SaveChanges()
+    {
+        await SearchService.UpdateEmployeeDepartmentHistory(SearchService.SelectedPersonHistory, SearchService.SelectedPersonHistory.ShiftId);
+
+        NavigationManager.NavigateTo("/humanresource");
     }
 }
