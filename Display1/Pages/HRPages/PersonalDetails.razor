@@ -26,18 +26,49 @@
                 <strong>Title:</strong>
                 <span>@(SelectedPerson?.Title)</span>
             </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>First Name:</strong>
-                <input type="text" @bind="@SelectedPerson.FirstName" class="form-control" />
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>Middle Name:</strong>
-                <input type="text" @bind="@SelectedPerson.MiddleName" class="form-control" />
-            </li>
-            <li class="list-group-item" style="list-style-type: none;">
-                <strong>Last Name:</strong>
-                <input type="text" @bind="@SelectedPerson.LastName" class="form-control" />
-            </li>
+            @if (IsEditing)
+            {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>First Name:</strong>
+                    <input type="text" @bind="SelectedPerson.FirstName" class="form-control" />
+                </li>
+            }
+            else
+            {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>First Name:</strong>
+                    <span>@(SelectedPerson?.FirstName)</span>
+                </li>
+            }
+            @if (IsEditing)
+            {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Middle Name:</strong>
+                    <input type="text" @bind="SelectedPerson.MiddleName" class="form-control" />
+                </li>
+            }
+            else
+            {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Middle Name:</strong>
+                    <span>@(SelectedPerson?.MiddleName)</span>
+                </li>
+            }
+
+            @if (IsEditing)
+            {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Last Name:</strong>
+                    <input type="text" @bind="SelectedPerson.LastName" class="form-control" />
+                </li>
+            }
+            else
+            {
+                <li class="list-group-item" style="list-style-type: none;">
+                    <strong>Last Name:</strong>
+                    <span>@(SelectedPerson?.LastName)</span>
+                </li>
+            }
             <li class="list-group-item" style="list-style-type: none;">
                 <strong>Suffix:</strong>
                 <span>@(SelectedPerson?.Suffix)</span>
@@ -73,8 +104,21 @@
                 <span>@(SelectedPerson?.ModifiedDate)</span>
             </li>
             <li>
-                <div>
-                    <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+                <div class="mt-3">
+
+                    @if (IsEditing)
+
+                    {
+                        <button class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+
+                        <button class="btn btn-secondary ml-2" @onclick="CancelEdit">Cancel</button>
+                    }
+
+                    else
+
+                    {
+                        <button class="btn btn-primary" @onclick="StartEdit">Edit</button>
+                    }
 
                 </div>
             </li>
@@ -106,17 +150,25 @@
     }
 
 
-
-    public int Id { get; set; }
+    private bool IsEditing = false;
 
     private async Task SaveChanges()
     {
         await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
         
-        NavigationManager.NavigateTo($"/humanresource");
+        NavigationManager.NavigateTo($"/humanresource?PersonType={SelectedPerson.PersonType}");
+    }
+    private void StartEdit()
+
+    {
+        IsEditing = true;
     }
 
+    private async Task CancelEdit()
 
-
+    {
+        await EmployeeService.UpdatePersonDetailsAsync(SelectedPerson);
+        IsEditing = false;
+    }
 }
 
