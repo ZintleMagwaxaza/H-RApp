@@ -91,8 +91,6 @@ namespace Display1.Service
             SelectedPerson = null;
         }
         
-       
-
 
         public void SelectUser(Person person)
         {
@@ -166,29 +164,7 @@ namespace Display1.Service
             }
         }
 
-        /* public async Task UpdateEmployeeDepartmentHistory(EmployeeDepartmentHistory history)
-         {
-             if (history != null)
-             {
-                 var existingHistory = await _db.EmployeeDepartmentHistory.FindAsync(
-      history.BusinessEntityId,
-      (short)history.DepartmentId, // Cast to short if needed
-      (byte)history.ShiftId,
-      (DateTime)history.StartDate
-  );
-
-                 if (existingHistory != null)
-                 {
-                     _db.EmployeeDepartmentHistory.Remove(existingHistory);
-                     await _db.SaveChangesAsync();
-                 }
-
-                 _db.EmployeeDepartmentHistory.Add(history);
-                 await _db.SaveChangesAsync();
-             }
-         }*/
-
-
+  
         public async Task SaveChangesAsync()
         {
             await _db.SaveChangesAsync();
@@ -200,7 +176,6 @@ namespace Display1.Service
             {
                 try
                 {
-                    // Find the existing entity
                     var existingEntity = context.EmployeeDepartmentHistory
                         .FirstOrDefault(e => e.BusinessEntityId == employeeDepartmentHistory.BusinessEntityId
                                              && e.DepartmentId == employeeDepartmentHistory.DepartmentId
@@ -210,7 +185,7 @@ namespace Display1.Service
                     {
                         
                         context.EmployeeDepartmentHistory.Remove(existingEntity);
-                       await  context.SaveChangesAsync();
+                        await  context.SaveChangesAsync();
                     }
 
                   
@@ -220,7 +195,7 @@ namespace Display1.Service
                         DepartmentId = employeeDepartmentHistory.DepartmentId,
                         StartDate = employeeDepartmentHistory.StartDate,
                         EndDate = employeeDepartmentHistory.EndDate,
-                        ModifiedDate = employeeDepartmentHistory.ModifiedDate,
+                        ModifiedDate = DateTime.Now,
                         ShiftId = (byte)newShiftId
                     };
 
